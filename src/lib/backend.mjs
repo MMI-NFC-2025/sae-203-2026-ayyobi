@@ -104,6 +104,17 @@ export async function getArtistsBySceneName(sceneName) {
 }
 
 /**
+ * Retourne toutes les programmations d'un artiste par son id
+ */
+export async function getProgramByArtistId(artistId) {
+  return await pb.collection("programation").getFullList({
+    filter: `artiste = "${artistId}"`,
+    sort: "+date_representation",
+    expand: "artiste,scene",
+  });
+}
+
+/**
  * Programme complet trié par date
  */
 export async function getFullProgram() {
@@ -187,4 +198,50 @@ export async function saveRecord(collectionName, data, id = null) {
   }
 
   return await pb.collection(collectionName).create(data);
+}
+
+
+
+
+/**
+ * Artistes filtrés par genre musical
+ */
+export async function getArtistsByGenre(genre) {
+  return await pb.collection("artistes").getFullList({
+    filter: `genre_musical = "${genre}"`,
+    sort: "+nom_artiste",
+  });
+}
+
+/**
+ * Programmation filtrée par jour
+ */
+export async function getArtistsByDay(jour) {
+  return await pb.collection("programation").getFullList({
+    filter: `jour_label = "${jour}"`,
+    sort: "+date_representation",
+    expand: "artiste,scene",
+  });
+}
+
+/**
+ * Liste des genres uniques
+ */
+export async function getGenres() {
+  const artists = await pb.collection("artistes").getFullList({
+    sort: "+nom_artiste",
+  });
+
+  return [...new Set(artists.map((artist) => artist.genre_musical).filter(Boolean))];
+}
+
+/**
+ * Liste des jours uniques depuis la programmation
+ */
+export async function getDays() {
+  const records = await pb.collection("programation").getFullList({
+    sort: "+date_representation",
+  });
+
+  return [...new Set(records.map((item) => item.jour_label).filter(Boolean))];
 }

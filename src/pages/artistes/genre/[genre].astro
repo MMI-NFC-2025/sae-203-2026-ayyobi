@@ -1,23 +1,51 @@
 ---
-import BaseLayout from '../../../layouts/BaseLayout.astro';
-import ArtistCard from '../../../components/ArtistCard.astro';
-import { getArtistes } from '../../../lib/backend.mjs';
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ArtistCard from "../../../components/ArtistCard.astro";
+import { getGenres, getArtistsByGenre } from "../../../lib/backend.mjs";
 
 export async function getStaticPaths() {
-  const artists = await getArtistes();
-  const genres = [...new Set(artists.map((artist) => artist.genreSlug).filter(Boolean))];
-  return genres.map((genre) => ({ params: { genre } }));
+  const genres = await getGenres();
+
+  return genres.map((genre) => ({
+    params: { genre },
+  }));
 }
 
 const { genre } = Astro.params;
-const artists = (await getArtistes()).filter((artist) => artist.genreSlug === genre);
+const artists = await getArtistsByGenre(genre);
 ---
 
-<BaseLayout title="Artistes par genre" description="Liste des artistes par genre">
-  <section class="mx-auto w-full max-w-6xl px-4 py-12">
-    <h1 class="text-4xl font-black">Genre : {genre}</h1>
-    <div class="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-      {artists.map((artist) => <ArtistCard artist={artist} />)}
+<BaseLayout
+  title={`Genre ${genre} | Les Rives du Territoire`}
+  description={`Découvrez les artistes du genre ${genre}.`}
+>
+  <section class="border-b border-white/10 bg-[#1b2230]">
+    <div class="mx-auto max-w-7xl px-4 py-16 md:px-6 md:py-24">
+      <p
+        class="text-sm font-semibold uppercase tracking-[0.2em] text-[#facc15]"
+      >
+        Filtre par genre
+      </p>
+
+      <h1 class="mt-4 font-mono text-5xl font-bold text-white md:text-7xl">
+        {genre}
+      </h1>
     </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-4 py-16 md:px-6">
+    {
+      artists.length > 0 ? (
+        <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {artists.map((artist) => (
+            <ArtistCard item={artist} />
+          ))}
+        </div>
+      ) : (
+        <div class="rounded-[24px] border border-white/10 bg-[#222b3b] p-8 text-center text-white/70">
+          Aucun artiste trouvé pour ce genre.
+        </div>
+      )
+    }
   </section>
 </BaseLayout>

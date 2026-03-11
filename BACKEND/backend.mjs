@@ -104,6 +104,18 @@ export async function getArtistsBySceneName(sceneName) {
 }
 
 /**
+ * Retourne toutes les programmations d'un artiste par son id
+ */
+export async function getProgramByArtistId(artistId) {
+  return await pb.collection("programation").getFullList({
+    filter: `artiste = "${artistId}"`,
+    sort: "+date_representation",
+    expand: "artiste,scene",
+  });
+}
+
+
+/**
  * Programme complet trié par date
  */
 export async function getFullProgram() {
