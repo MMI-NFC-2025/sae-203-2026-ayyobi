@@ -1,126 +1,195 @@
-import PocketBase from 'pocketbase';
-import { slugify } from './utils.mjs';
+import { pb } from "./pocketbase.js";
 
-const baseUrl = import.meta.env.PUBLIC_POCKETBASE_URL || 'http://127.0.0.1:8090';
-export const pb = new PocketBase(baseUrl);
-
-function getFileUrl(collectionName, record, fieldName) {
-  if (!record || !record[fieldName]) return 'https://placehold.co/800x600?text=Festival';
-  return `${pb.baseUrl}/api/files/${collectionName}/${record.id}/${record[fieldName]}`;
+/**
+ * Génère l'URL d'un fichier PocketBase
+ */
+export function getFileUrl(record, field) {
+  if (!record || !field || !record[field]) return null;
+  return pb.files.getURL(record, record[field]);
 }
 
-function getFilesUrl(collectionName, record, fieldName) {
-  if (!record || !Array.isArray(record[fieldName])) return [];
-  return record[fieldName].map(
-    (file) => `${pb.baseUrl}/api/files/${collectionName}/${record.id}/${file}`
-  );
+/**
+ * Génère toutes les URLs d'un champ file multiple
+ */
+export function getGalleryUrls(record, field) {
+  if (!record || !field || !record[field] || !Array.isArray(record[field])) {
+    return [];
+  }
+
+  return record[field].map((file) => pb.files.getURL(record, file));
 }
 
-function normalizeArtiste(record) {
-  return {
-    id: record.id,
-    nom: record.nom_artiste,
-    genre: record.genre_musical,
-    genreSlug: slugify(record.genre_musical),
-    jour: record.jour_label || '',
-    jourSlug: slugify(record.jour_label || ''),
-    description: record.description,
-    photo: getFileUrl('artistes', record, 'photo_principale'),
-    galerie: getFilesUrl('artistes', record, 'galerie_photos'),
-  };
-}
-
-function normalizeScene(record) {
-  return {
-    id: record.id,
-    nom: record.nom_scene,
-    description: record.description_scene,
-    localisation: record.localisation,
-    capacite: record.capacite,
-    photo: getFileUrl('scenes', record, 'photo_scene'),
-  };
-}
-
-function normalizeFaq(record) {
-  return {
-    id: record.id,
-    question: record.question,
-    reponse: record.reponse,
-    ordre: record.ordre_affichage,
-  };
-}
-
-function normalizeProgrammation(record) {
-  const artiste = record.expand?.artiste ? normalizeArtiste(record.expand.artiste) : null;
-  const scene = record.expand?.scene ? normalizeScene(record.expand.scene) : null;
-
-  return {
-    id: record.id,
-    artiste,
-    scene,
-    date: record.date_representation,
-    heureDebut: record.heure_debut || '',
-    jourLabel: record.jour_label || '',
-    jourSlug: slugify(record.jour_label || ''),
-    ordre: record.ordre_passage,
-  };
-}
-
-export async function getArtistes() {
-  const records = await pb.collection('artistes').getFullList({ sort: 'nom_artiste' });
-  return records.map(normalizeArtiste);
-}
-
-export async function getArtiste(id) {
-  const record = await pb.collection('artistes').getOne(id);
-  return normalizeArtiste(record);
-}
-
-export async function getScenes() {
-  const records = await pb.collection('scenes').getFullList({ sort: 'nom_scene' });
-  return records.map(normalizeScene);
-}
-
-export async function getScene(id) {
-  const record = await pb.collection('scenes').getOne(id);
-  return normalizeScene(record);
-}
-
-export async function getProgrammation() {
-  const records = await pb.collection('programmation').getFullList({
-    expand: 'artiste,scene',
-    sort: 'date_representation',
+/**
+ * 1. Retourne la liste de tous les artistes triés par date de représentation
+ */
+export async function getAllArtistsSortedByDate() {
+  const records = await pb.collection("programation").getFullList({
+    sort: "+date_representation",
+    expand: "artiste,scene",
   });
-  return records.map(normalizeProgrammation);
+
+  return records.map((item) => ({
+    programmationId: item.id,
+    date_representation: item.date_representation,
+    jour_label: item.jour_label,
+    ordre_passage: item.ordre_passage,
+    artiste: item.expand?.artiste || null,
+    scene: item.expand?.scene || null,
+  }));
 }
 
-export async function getProgrammationParArtiste(artisteId) {
-  const records = await pb.collection('programmation').getFullList({
-    filter: `artiste="${artisteId}"`,
-    expand: 'artiste,scene',
-    sort: 'date_representation',
+/**
+ * 2. Retourne la liste de toutes les scènes triées par nom
+ */
+export async function getAllScenesSortedByName() {
+  return await pb.collection("scenes").getFullList({
+    sort: "+nom_scene",
   });
-  return records.map(normalizeProgrammation);
 }
 
-export async function getProgrammationParScene(sceneId) {
-  const records = await pb.collection('programmation').getFullList({
-    filter: `scene="${sceneId}"`,
-    expand: 'artiste,scene',
-    sort: 'date_representation',
+/**
+ * 3. Retourne la liste de tous les artistes triés par ordre alphabétique
+ */
+export async function getAllArtistsSortedByName() {
+  return await pb.collection("artistes").getFullList({
+    sort: "+nom_artiste",
   });
-  return records.map(normalizeProgrammation);
 }
 
-export async function getFaq() {
-  const records = await pb.collection('faq').getFullList({ sort: 'ordre_affichage' });
-  return records.map(normalizeFaq);
+/**
+ * 4. Retourne les infos d'un artiste par son id
+ */
+export async function getArtistById(id) {
+  return await pb.collection("artistes").getOne(id);
 }
 
+/**
+ * 5. Retourne les infos d'une scène par son id
+ */
+export async function getSceneById(id) {
+  return await pb.collection("scenes").getOne(id);
+}
+
+/**
+ * 6. Retourne tous les artistes d'une scène donnée par son id, triés par date
+ */
+export async function getArtistsBySceneId(sceneId) {
+  const records = await pb.collection("programation").getFullList({
+    filter: `scene = "${sceneId}"`,
+    sort: "+date_representation",
+    expand: "artiste,scene",
+  });
+
+  return records.map((item) => ({
+    programmationId: item.id,
+    date_representation: item.date_representation,
+    jour_label: item.jour_label,
+    ordre_passage: item.ordre_passage,
+    artiste: item.expand?.artiste || null,
+    scene: item.expand?.scene || null,
+  }));
+}
+
+/**
+ * 7. Retourne tous les artistes d'une scène donnée par son nom, triés par date
+ */
+export async function getArtistsBySceneName(sceneName) {
+  const scenes = await pb.collection("scenes").getFullList({
+    filter: `nom_scene = "${sceneName}"`,
+  });
+
+  if (!scenes.length) return [];
+
+  return await getArtistsBySceneId(scenes[0].id);
+}
+
+/**
+ * Programme complet trié par date
+ */
+export async function getFullProgram() {
+  return await pb.collection("programation").getFullList({
+    sort: "+date_representation",
+    expand: "artiste,scene",
+  });
+}
+
+/**
+ * Programme filtré par jour
+ */
+export async function getProgramByDay(jour) {
+  return await pb.collection("programation").getFullList({
+    filter: `jour_label = "${jour}"`,
+    sort: "+date_representation",
+    expand: "artiste,scene",
+  });
+}
+
+/**
+ * Liste des partenaires
+ */
+export async function getPartners() {
+  return await pb.collection("partenaires").getFullList({
+    sort: "-ordre_affichage",
+  });
+}
+
+/**
+ * Liste des tarifs
+ */
 export async function getTarifs() {
-  return await pb.collection('tarifs').getFullList({ sort: 'ordre_affichage' });
+  return await pb.collection("tarifs").getFullList({
+    sort: "-ordre_affichage",
+  });
 }
 
-export async function getPartenaires() {
-  return await pb.collection('partenaires').getFullList({ sort: 'ordre_affichage' });
+/**
+ * Liste des questions FAQ
+ */
+export async function getFaqs() {
+  return await pb.collection("faq").getFullList({
+    sort: "-ordre_affichage",
+  });
+}
+
+/**
+ * Liste des artistes
+ */
+export async function getArtists() {
+  return await pb.collection("artistes").getFullList({
+    sort: "+nom_artiste",
+  });
+}
+
+/**
+ * Liste des scènes
+ */
+export async function getScenes() {
+  return await pb.collection("scenes").getFullList({
+    sort: "+nom_scene",
+  });
+}
+
+/**
+ * Équipe
+ */
+export async function getTeam() {
+  try {
+    return await pb.collection("equipe").getFullList({
+      sort: "ordre_affichage",
+    });
+  } catch (error) {
+    return [];
+  }
+}
+
+
+/**
+ * Ajouter ou modifier un artiste ou une scène
+ */
+export async function saveRecord(collectionName, data, id = null) {
+  if (id) {
+    return await pb.collection(collectionName).update(id, data);
+  }
+
+  return await pb.collection(collectionName).create(data);
 }

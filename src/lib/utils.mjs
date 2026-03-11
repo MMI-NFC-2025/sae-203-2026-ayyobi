@@ -1,19 +1,28 @@
-export function formatDateFr(dateString) {
-  if (!dateString) return '';
+export function formatDate(dateString) {
+  if (!dateString) return "";
 
-  return new Date(dateString).toLocaleDateString('fr-FR', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
+  return new Date(dateString).toLocaleDateString("fr-FR", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
   });
 }
 
-export function slugify(value = '') {
-  return String(value)
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
+export function formatHour(dateString) {
+  if (!dateString) return "";
+
+  return new Date(dateString).toLocaleTimeString("fr-FR", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+export function slugify(text) {
+  return text
+    ?.toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\w\s-]/g, "")
     .trim()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+    .replace(/\s+/g, "-");
 }
