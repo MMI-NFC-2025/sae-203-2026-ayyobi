@@ -2,13 +2,22 @@
 const { items = [] } = Astro.props;
 ---
 
-<div class="grid gap-4">
-  {items.map((item) => (
-    <details class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <summary class="cursor-pointer list-none text-lg font-semibold text-slate-950">
-        {item.question}
-      </summary>
-      <p class="mt-4 text-sm leading-7 text-slate-600">{item.reponse}</p>
-    </details>
-  ))}
+<div class="space-y-4">
+  {
+    items.map((item, index) => (
+      <details class="group rounded-[20px] border border-white/10 bg-[#222b3b] p-5">
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-4">
+          <span class="text-base font-semibold text-white">
+            {item.question}
+          </span>
+
+          <span class="text-xl font-bold text-[#facc15] transition group-open:rotate-45">
+            +
+          </span>
+        </summary>
+
+        <div class="pt-4 text-sm leading-7 text-white/75">{item.reponse}</div>
+      </details>
+    ))
+  }
 </div>

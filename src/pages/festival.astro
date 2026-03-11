@@ -1,13 +1,25 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Hero from '../components/Hero.astro';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import TeamCard from "../components/TeamCard.astro";
+import { getTeam } from "../lib/backend.mjs";
+
+const team = await getTeam();
 ---
 
-<BaseLayout title="Festival" description="Presentation du festival">
-  <Hero
-    title="Un festival ancre dans son territoire"
-    subtitle="Trois jours de concerts, de rencontres et d'experiences artistiques."
-    ctaHref="/infos-pratiques"
-    ctaLabel="Preparer ma venue"
-  />
+<BaseLayout title="Le Festival | Les Rives du Territoire">
+  <section class="mx-auto max-w-7xl px-4 py-16">
+    <h1 class="font-mono text-4xl font-bold text-white md:text-6xl">
+      Le Festival
+    </h1>
+
+    <div class="mt-16">
+      <h2 class="font-mono text-3xl font-bold text-white md:text-4xl">
+        Notre équipe
+      </h2>
+
+      <div class="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+        {team.map((member) => <TeamCard member={member} />)}
+      </div>
+    </div>
+  </section>
 </BaseLayout>

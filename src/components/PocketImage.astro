@@ -1,9 +1,19 @@
 ---
-const {
-  src = 'https://placehold.co/800x600?text=Festival',
-  alt = '',
-  className = '',
-} = Astro.props;
+import { getFileUrl } from "../lib/backend.mjs";
+
+const { record, field, alt = "", class: className = "" } = Astro.props;
+
+const imageUrl = record ? getFileUrl(record, field) : null;
 ---
 
-<img src={src} alt={alt} class:list={['block h-full w-full object-cover', className]} loading="lazy" />
+{
+  imageUrl ? (
+    <img src={imageUrl} alt={alt} class={className} loading="lazy" />
+  ) : (
+    <div
+      class={`flex items-center justify-center bg-white/5 text-sm text-white/50 ${className}`}
+    >
+      Image indisponible
+    </div>
+  )
+}
