@@ -1,21 +1,240 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Hero from '../components/Hero.astro';
-import ProgramCard from '../components/ProgramCard.astro';
-import { getProgrammation } from '../lib/backend.mjs';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getFullProgram } from "../lib/backend.mjs";
+import { formatDate, formatHour } from "../lib/utils.mjs";
 
-const programme = await getProgrammation();
+const program = await getFullProgram();
+
+const genres = [
+  ...new Set(
+    program.map((item) => item.expand?.artiste?.genre_musical).filter(Boolean),
+  ),
+].sort();
+
+const scenes = [
+  ...new Set(
+    program.map((item) => item.expand?.scene?.nom_scene).filter(Boolean),
+  ),
+].sort();
+
+const groupedProgram = Object.entries(
+  program.reduce((acc, item) => {
+    const day = item.jour_label || "Autre";
+    if (!acc[day]) acc[day] = [];
+    acc[day].push(item);
+    return acc;
+  }, {}),
+);
 ---
 
-<BaseLayout title="Programme" description="Programme du festival">
-  <Hero
-    title="Programme"
-    subtitle="Tous les passages, scenes et artistes du festival."
-  />
+<BaseLayout
+  title="Programme | Les Rives du Territoire"
+  description="Découvrez le programme complet du festival Les Rives du Territoire."
+>
+  <section class="border-b border-white/10 bg-[#1b2230]">
+    <div class="mx-auto max-w-7xl px-4 py-16 md:px-6 md:py-24">
+      <h1 class="font-mono text-5xl font-bold text-white md:text-7xl">
+        Programme
+      </h1>
 
-  <section class="mx-auto w-full max-w-6xl px-4 py-8">
-    <div class="grid gap-4">
-      {programme.map((item) => <ProgramCard item={item} />)}
+      <p class="mt-6 max-w-3xl text-lg leading-8 text-white/80 md:text-2xl">
+        Découvrez la programmation complète du festival et filtrez les concerts
+        par genre, horaire ou scène.
+      </p>
+
+      <div class="mt-10 grid gap-4 md:grid-cols-3">
+        <div>
+          <label
+            for="genreFilter"
+            class="mb-2 block text-sm font-semibold text-white/80"
+          >
+            Genre
+          </label>
+          <select
+            id="genreFilter"
+            class="w-full rounded-2xl border border-white/10 bg-[#222b3b] px-4 py-3 text-white outline-none transition focus:border-[#facc15]"
+          >
+            <option value="">Tous les genres</option>
+            {genres.map((genre) => <option value={genre}>{genre}</option>)}
+          </select>
+        </div>
+
+        <div>
+          <label
+            for="hourFilter"
+            class="mb-2 block text-sm font-semibold text-white/80"
+          >
+            Horaire
+          </label>
+          <select
+            id="hourFilter"
+            class="w-full rounded-2xl border border-white/10 bg-[#222b3b] px-4 py-3 text-white outline-none transition focus:border-[#facc15]"
+          >
+            <option value="">Tous les horaires</option>
+            <option value="afternoon">Avant 18h</option>
+            <option value="evening">18h à 21h</option>
+            <option value="night">Après 21h</option>
+          </select>
+        </div>
+
+        <div>
+          <label
+            for="sceneFilter"
+            class="mb-2 block text-sm font-semibold text-white/80"
+          >
+            Scène
+          </label>
+          <select
+            id="sceneFilter"
+            class="w-full rounded-2xl border border-white/10 bg-[#222b3b] px-4 py-3 text-white outline-none transition focus:border-[#facc15]"
+          >
+            <option value="">Toutes les scènes</option>
+            {scenes.map((scene) => <option value={scene}>{scene}</option>)}
+          </select>
+        </div>
+      </div>
+
+      <div class="mt-6 flex flex-wrap gap-3">
+        <button
+          id="resetFilters"
+          type="button"
+          class="inline-flex items-center justify-center rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium text-white/85 transition hover:border-white/30 hover:bg-white/5"
+        >
+          Réinitialiser les filtres
+        </button>
+
+        <a
+          href="/documents/programme-festival.pdf"
+          target="_blank"
+          rel="noreferrer"
+          class="inline-flex items-center justify-center rounded-full bg-[#facc15] px-5 py-2.5 text-sm font-semibold text-black transition hover:opacity-90"
+        >
+          Télécharger le programme PDF
+        </a>
+      </div>
     </div>
   </section>
+
+  <section class="mx-auto max-w-7xl px-4 py-16 md:px-6">
+    {
+      groupedProgram.map(([day, items]) => (
+        <div class="program-day mb-14 last:mb-0" data-day={day}>
+          <div class="mb-8 border-b border-[#facc15]/60 pb-4">
+            <h2 class="font-mono text-3xl font-bold text-white md:text-4xl">
+              {day}
+            </h2>
+          </div>
+
+          <div class="grid gap-5">
+            {items.map((item) => {
+              const artiste = item.expand?.artiste;
+              const scene = item.expand?.scene;
+              const hour = new Date(item.date_representation).getHours();
+
+              let hourRange = "";
+              if (hour < 18) hourRange = "afternoon";
+              else if (hour <= 21) hourRange = "evening";
+              else hourRange = "night";
+
+              return (
+                <article
+                  class="program-card rounded-[22px] border border-white/10 bg-[#222b3b] p-5 transition hover:border-white/20"
+                  data-genre={artiste?.genre_musical || ""}
+                  data-scene={scene?.nom_scene || ""}
+                  data-hour={hourRange}
+                >
+                  <div class="grid gap-4 md:grid-cols-[110px_1fr] md:items-start">
+                    <div class="font-mono text-2xl font-bold text-[#facc15]">
+                      {formatHour(item.date_representation)}
+                    </div>
+
+                    <div class="space-y-2">
+                      <h3 class="font-mono text-xl font-bold text-white">
+                        {artiste?.nom_artiste || "Artiste"}
+                      </h3>
+
+                      <p class="text-sm text-white/70">
+                        {scene?.nom_scene || "Scène non définie"}
+                      </p>
+
+                      <p class="text-sm text-white/60">
+                        {formatDate(item.date_representation)}
+                      </p>
+
+                      {artiste?.genre_musical && (
+                        <span class="inline-flex rounded-full bg-[#facc15] px-3 py-1 text-xs font-semibold text-black">
+                          {artiste.genre_musical}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      ))
+    }
+
+    <p
+      id="noResults"
+      class="hidden rounded-[22px] border border-white/10 bg-[#222b3b] p-6 text-center text-white/70"
+    >
+      Aucun résultat ne correspond à vos filtres.
+    </p>
+  </section>
+
+  <script>
+    const genreFilter = document.getElementById("genreFilter");
+    const hourFilter = document.getElementById("hourFilter");
+    const sceneFilter = document.getElementById("sceneFilter");
+    const resetFilters = document.getElementById("resetFilters");
+    const cards = document.querySelectorAll(".program-card");
+    const days = document.querySelectorAll(".program-day");
+    const noResults = document.getElementById("noResults");
+
+    function applyFilters() {
+      const selectedGenre = genreFilter.value;
+      const selectedHour = hourFilter.value;
+      const selectedScene = sceneFilter.value;
+
+      let visibleCards = 0;
+
+      cards.forEach((card) => {
+        const genre = card.dataset.genre;
+        const hour = card.dataset.hour;
+        const scene = card.dataset.scene;
+
+        const matchGenre = !selectedGenre || genre === selectedGenre;
+        const matchHour = !selectedHour || hour === selectedHour;
+        const matchScene = !selectedScene || scene === selectedScene;
+
+        const visible = matchGenre && matchHour && matchScene;
+
+        card.classList.toggle("hidden", !visible);
+
+        if (visible) visibleCards++;
+      });
+
+      days.forEach((day) => {
+        const visibleInDay = day.querySelectorAll(
+          ".program-card:not(.hidden)",
+        ).length;
+        day.classList.toggle("hidden", visibleInDay === 0);
+      });
+
+      noResults.classList.toggle("hidden", visibleCards > 0);
+    }
+
+    genreFilter?.addEventListener("change", applyFilters);
+    hourFilter?.addEventListener("change", applyFilters);
+    sceneFilter?.addEventListener("change", applyFilters);
+
+    resetFilters?.addEventListener("click", () => {
+      genreFilter.value = "";
+      hourFilter.value = "";
+      sceneFilter.value = "";
+      applyFilters();
+    });
+  </script>
 </BaseLayout>
