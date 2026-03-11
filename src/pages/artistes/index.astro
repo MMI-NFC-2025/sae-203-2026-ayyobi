@@ -1,18 +1,43 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Hero from '../../components/Hero.astro';
-import ArtistCard from '../../components/ArtistCard.astro';
-import { getArtistes } from '../../lib/backend.mjs';
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ArtistCard from "../../components/ArtistCard.astro";
+import { getAllArtistsSortedByDate } from "../../lib/backend.mjs";
 
-const artists = await getArtistes();
+const artists = await getAllArtistsSortedByDate();
 ---
 
-<BaseLayout title="Artistes" description="Tous les artistes du festival">
-  <Hero title="Artistes" subtitle="Explore tous les artistes invites du festival." />
+<BaseLayout
+  title="Artistes | Les Rives du Territoire"
+  description="Découvrez les artistes programmés au festival Les Rives du Territoire."
+>
+  <section class="border-b border-white/10 bg-[#1b2230]">
+    <div class="mx-auto max-w-7xl px-4 py-16 md:px-6 md:py-24">
+      <h1 class="font-mono text-5xl font-bold text-white md:text-7xl">
+        Artistes
+      </h1>
 
-  <section class="mx-auto w-full max-w-6xl px-4 py-8">
-    <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-      {artists.map((artist) => <ArtistCard artist={artist} />)}
+      <p class="mt-6 max-w-3xl text-lg leading-8 text-white/80 md:text-2xl">
+        Découvrez les artistes programmés au festival, leurs univers musicaux,
+        leurs dates de représentation et leurs scènes.
+      </p>
     </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-4 py-16 md:px-6">
+    {
+      artists.length > 0 ? (
+        <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {artists.map((item) => (
+            <ArtistCard item={item} />
+          ))}
+        </div>
+      ) : (
+        <div class="rounded-[24px] border border-white/10 bg-[#222b3b] p-8 text-center">
+          <p class="text-base text-white/70">
+            Aucun artiste n’est disponible pour le moment.
+          </p>
+        </div>
+      )
+    }
   </section>
 </BaseLayout>
