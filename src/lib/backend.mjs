@@ -1,82 +1,126 @@
 import PocketBase from 'pocketbase';
+import { slugify } from './utils.mjs';
 
-const pb = new PocketBase('http://127.0.0.1:8090');
+const baseUrl = import.meta.env.PUBLIC_POCKETBASE_URL || 'http://127.0.0.1:8090';
+export const pb = new PocketBase(baseUrl);
 
-// fonction pour construire l'url d'une image à partir de son nom de fichier
-export function getFileUrl(collection, id, file) {
-  if (!file) return "https://placehold.co/600x400"
-  return `http://127.0.0.1:8090/api/files/${collection}/${id}/${file}`
+function getFileUrl(collectionName, record, fieldName) {
+  if (!record || !record[fieldName]) return 'https://placehold.co/800x600?text=Festival';
+  return `${pb.baseUrl}/api/files/${collectionName}/${record.id}/${record[fieldName]}`;
 }
 
-// fonctions pour récupérer les données depuis PocketBase
+function getFilesUrl(collectionName, record, fieldName) {
+  if (!record || !Array.isArray(record[fieldName])) return [];
+  return record[fieldName].map(
+    (file) => `${pb.baseUrl}/api/files/${collectionName}/${record.id}/${file}`
+  );
+}
+
+function normalizeArtiste(record) {
+  return {
+    id: record.id,
+    nom: record.nom_artiste,
+    genre: record.genre_musical,
+    genreSlug: slugify(record.genre_musical),
+    jour: record.jour_label || '',
+    jourSlug: slugify(record.jour_label || ''),
+    description: record.description,
+    photo: getFileUrl('artistes', record, 'photo_principale'),
+    galerie: getFilesUrl('artistes', record, 'galerie_photos'),
+  };
+}
+
+function normalizeScene(record) {
+  return {
+    id: record.id,
+    nom: record.nom_scene,
+    description: record.description_scene,
+    localisation: record.localisation,
+    capacite: record.capacite,
+    photo: getFileUrl('scenes', record, 'photo_scene'),
+  };
+}
+
+function normalizeFaq(record) {
+  return {
+    id: record.id,
+    question: record.question,
+    reponse: record.reponse,
+    ordre: record.ordre_affichage,
+  };
+}
+
+function normalizeProgrammation(record) {
+  const artiste = record.expand?.artiste ? normalizeArtiste(record.expand.artiste) : null;
+  const scene = record.expand?.scene ? normalizeScene(record.expand.scene) : null;
+
+  return {
+    id: record.id,
+    artiste,
+    scene,
+    date: record.date_representation,
+    heureDebut: record.heure_debut || '',
+    jourLabel: record.jour_label || '',
+    jourSlug: slugify(record.jour_label || ''),
+    ordre: record.ordre_passage,
+  };
+}
+
 export async function getArtistes() {
-  return await pb.collection('artistes').getFullList({
-    sort: 'nom_artiste'
-  })
+  const records = await pb.collection('artistes').getFullList({ sort: 'nom_artiste' });
+  return records.map(normalizeArtiste);
 }
 
-// fonction pour récupérer un artiste par son id
-export async function getArtisteById(id) {
-  return await pb.collection('artistes').getOne(id)
+export async function getArtiste(id) {
+  const record = await pb.collection('artistes').getOne(id);
+  return normalizeArtiste(record);
 }
 
-// fonction pour récupérer les scènes
 export async function getScenes() {
-  return await pb.collection('scenes').getFullList({
-    sort: 'nom_scene'
-  })
+  const records = await pb.collection('scenes').getFullList({ sort: 'nom_scene' });
+  return records.map(normalizeScene);
 }
 
-// fonction pour récupérer une scène par son id
-export async function getSceneById(id) {
-  return await pb.collection('scenes').getOne(id)
+export async function getScene(id) {
+  const record = await pb.collection('scenes').getOne(id);
+  return normalizeScene(record);
 }
 
-
-// fonction pour récupérer la programmation complète, avec les artistes et les scènes associés
 export async function getProgrammation() {
-  return await pb.collection('programmation').getFullList({
+  const records = await pb.collection('programmation').getFullList({
     expand: 'artiste,scene',
-    sort: 'date_representation'
-  })
+    sort: 'date_representation',
+  });
+  return records.map(normalizeProgrammation);
 }
 
-// fonction pour récupérer la programmation d'une scène, avec les artistes associés
-export async function getArtistesBySceneId(sceneId) {
-  return await pb.collection('programmation').getFullList({
+export async function getProgrammationParArtiste(artisteId) {
+  const records = await pb.collection('programmation').getFullList({
+    filter: `artiste="${artisteId}"`,
     expand: 'artiste,scene',
+    sort: 'date_representation',
+  });
+  return records.map(normalizeProgrammation);
+}
+
+export async function getProgrammationParScene(sceneId) {
+  const records = await pb.collection('programmation').getFullList({
     filter: `scene="${sceneId}"`,
-    sort: 'date_representation'
-  })
+    expand: 'artiste,scene',
+    sort: 'date_representation',
+  });
+  return records.map(normalizeProgrammation);
 }
 
-// fonction pour récupérer la programmation d'un artiste, avec les scènes associées
 export async function getFaq() {
-  return await pb.collection('faq').getFullList({
-    sort: 'ordre_affichage'
-  })
+  const records = await pb.collection('faq').getFullList({ sort: 'ordre_affichage' });
+  return records.map(normalizeFaq);
 }
 
-// fonction pour récupérer la programmation d'un artiste, avec les scènes associées
 export async function getTarifs() {
-  return await pb.collection('tarifs').getFullList({
-    sort: 'ordre_affichage'
-  })
+  return await pb.collection('tarifs').getFullList({ sort: 'ordre_affichage' });
 }
 
-// fonction pour récupérer la programmation d'un artiste, avec les scènes associées
 export async function getPartenaires() {
-  return await pb.collection('partenaires').getFullList({
-    sort: 'ordre_affichage'
-  })
-}
-
-
-// fonction pour récupérer la programmation d'un artiste, avec les scènes associées
-export async function getProgrammationByArtiste(id) {
-  return await pb.collection('programmation').getFullList({
-    expand: 'scene',
-    filter: `artiste="${id}"`,
-    sort: 'date_representation'
-  })
+  return await pb.collection('partenaires').getFullList({ sort: 'ordre_affichage' });
 }

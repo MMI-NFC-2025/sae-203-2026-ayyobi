@@ -1,13 +1,22 @@
-<header class="site-header">
-  <div class="container">
-    <a href="/" class="brand">Festival Astro</a>
-    <nav>
-      <a href="/festival">Festival</a>
-      <a href="/programme">Programme</a>
-      <a href="/artistes">Artistes</a>
-      <a href="/scenes">Scenes</a>
-      <a href="/infos-pratiques">Infos pratiques</a>
-      <a href="/contact">Contact</a>
+---
+const links = [
+  { href: '/festival', label: 'Festival' },
+  { href: '/programme', label: 'Programme' },
+  { href: '/artistes', label: 'Artistes' },
+  { href: '/scenes', label: 'Scenes' },
+  { href: '/infos-pratiques', label: 'Infos pratiques' },
+  { href: '/contact', label: 'Contact' },
+  { href: '/login', label: 'Login' },
+];
+---
+
+<header class="border-b border-slate-200 bg-white/90 backdrop-blur">
+  <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4">
+    <a href="/" class="text-lg font-black uppercase tracking-[0.2em] text-slate-950">
+      Festival
+    </a>
+    <nav class="hidden items-center gap-6 text-sm font-medium text-slate-600 md:flex">
+      {links.map((link) => <a href={link.href} class="transition hover:text-slate-950">{link.label}</a>)}
     </nav>
   </div>
 </header>

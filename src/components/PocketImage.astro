@@ -1,0 +1,9 @@
+---
+const {
+  src = 'https://placehold.co/800x600?text=Festival',
+  alt = '',
+  className = '',
+} = Astro.props;
+---
+
+<img src={src} alt={alt} class:list={['block h-full w-full object-cover', className]} loading="lazy" />

@@ -2,53 +2,42 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import ArtistCard from '../components/ArtistCard.astro';
-import ProgramItem from '../components/ProgramItem.astro';
-import PartnerLogo from '../components/PartnerLogo.astro';
+import SceneCard from '../components/SceneCard.astro';
+import ProgramCard from '../components/ProgramCard.astro';
+import { getArtistes, getScenes, getProgrammation } from '../lib/backend.mjs';
 
-const artists = [
-  { id: 'luna-wave', name: 'Luna Wave', genre: 'Electro pop', day: 'Vendredi' },
-  { id: 'nox-club', name: 'Nox Club', genre: 'Techno live', day: 'Samedi' },
-  { id: 'soleil-brut', name: 'Soleil Brut', genre: 'Rock francais', day: 'Dimanche' },
-];
-
-const highlights = [
-  { time: '18:00', title: 'Ouverture du site', stage: 'Esplanade' },
-  { time: '20:30', title: 'Luna Wave', stage: 'Scene Horizon' },
-  { time: '23:00', title: 'Nox Club', stage: 'Scene Orbit' },
-];
-
-const partners = ['Ville', 'Radio Campus', 'Studio 203'];
+const [artists, scenes, programme] = await Promise.all([
+  getArtistes(),
+  getScenes(),
+  getProgrammation(),
+]);
 ---
 
-<BaseLayout title="Festival Astro" description="Accueil du festival Astro.">
+<BaseLayout title="Festival | Accueil" description="Accueil du festival">
   <Hero
-    title="Le festival qui fait vibrer la ville"
-    subtitle="Une experience musicale sur trois scenes, avec artistes emergents, live sets et rencontres."
+    title="Les voix et les scenes du territoire"
+    subtitle="Retrouve les artistes, le programme et toutes les informations utiles du festival."
   />
 
-  <section class="container section-grid">
+  <section class="mx-auto grid w-full max-w-6xl gap-12 px-4 py-8">
     <div>
-      <h2>Artistes a l'affiche</h2>
-      <div class="grid">
-        {artists.map((artist) => <ArtistCard {...artist} />)}
+      <h2 class="text-2xl font-black">Artistes</h2>
+      <div class="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        {artists.slice(0, 3).map((artist) => <ArtistCard artist={artist} />)}
       </div>
     </div>
-  </section>
 
-  <section class="container section-grid">
     <div>
-      <h2>Temps forts</h2>
-      <div class="stack">
-        {highlights.map((item) => <ProgramItem {...item} />)}
+      <h2 class="text-2xl font-black">Scenes</h2>
+      <div class="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        {scenes.slice(0, 3).map((scene) => <SceneCard scene={scene} />)}
       </div>
     </div>
-  </section>
 
-  <section class="container section-grid">
     <div>
-      <h2>Partenaires</h2>
-      <div class="partners">
-        {partners.map((partner) => <PartnerLogo name={partner} />)}
+      <h2 class="text-2xl font-black">Programme</h2>
+      <div class="mt-6 grid gap-4">
+        {programme.slice(0, 3).map((item) => <ProgramCard item={item} />)}
       </div>
     </div>
   </section>

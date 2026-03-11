@@ -1,10 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
 ---
 
-<BaseLayout title="Contact" description="Contact du festival Astro.">
-  <section class="container page-section">
-    <h1>Contact</h1>
-    <p>Pour toute demande : contact@festival-astro.test</p>
-  </section>
+<BaseLayout title="Contact" description="Contacter le festival">
+  <Hero
+    title="Contact"
+    subtitle="Une question sur le festival, la billetterie ou l'acces ?"
+    ctaHref="mailto:contact@festival.test"
+    ctaLabel="Nous ecrire"
+  />
 </BaseLayout>

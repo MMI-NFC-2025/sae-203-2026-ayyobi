@@ -1,13 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
 ---
 
-<BaseLayout title="Le festival" description="Presentation du festival Astro.">
-  <section class="container page-section">
-    <h1>Le festival</h1>
-    <p>
-      Festival Astro rassemble concerts, performances visuelles et ateliers autour
-      des musiques actuelles.
-    </p>
-  </section>
+<BaseLayout title="Festival" description="Presentation du festival">
+  <Hero
+    title="Un festival ancre dans son territoire"
+    subtitle="Trois jours de concerts, de rencontres et d'experiences artistiques."
+    ctaHref="/infos-pratiques"
+    ctaLabel="Preparer ma venue"
+  />
 </BaseLayout>

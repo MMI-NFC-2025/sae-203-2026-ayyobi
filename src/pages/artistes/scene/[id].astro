@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ArtistCard from '../../../components/ArtistCard.astro';
+import { getScenes, getProgrammationParScene } from '../../../lib/backend.mjs';
+
+export async function getStaticPaths() {
+  const scenes = await getScenes();
+  return scenes.map((scene) => ({ params: { id: scene.id } }));
+}
+
+const { id } = Astro.params;
+const programmation = await getProgrammationParScene(id);
+const artists = programmation.map((item) => item.artiste).filter(Boolean);
+---
+
+<BaseLayout title="Artistes par scene" description="Liste des artistes par scene">
+  <section class="mx-auto w-full max-w-6xl px-4 py-12">
+    <h1 class="text-4xl font-black">Artistes de la scene</h1>
+    <div class="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      {artists.map((artist) => <ArtistCard artist={artist} />)}
+    </div>
+  </section>
+</BaseLayout>

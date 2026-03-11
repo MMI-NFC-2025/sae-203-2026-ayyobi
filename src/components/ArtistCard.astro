@@ -1,16 +1,26 @@
 ---
-interface Props {
-  id: string;
-  name: string;
-  genre: string;
-  day: string;
-}
+import PocketImage from './PocketImage.astro';
 
-const { id, name, genre, day } = Astro.props;
+const { artist } = Astro.props;
 ---
 
-<article class="card">
-  <h3><a href={`/artistes/${id}`}>{name}</a></h3>
-  <p>{genre}</p>
-  <p>{day}</p>
+<article class="rounded-3xl border border-slate-200 bg-white shadow-sm">
+  <div class="overflow-hidden rounded-t-3xl bg-slate-100">
+    <PocketImage src={artist?.photo} alt={artist?.nom || 'Artiste'} className="aspect-[4/3]" />
+  </div>
+  <div class="space-y-3 p-5">
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+        {artist?.genre || 'Artiste'}
+      </p>
+      <h3 class="mt-2 text-xl font-bold text-slate-950">
+        <a href={`/artistes/${artist?.id}`}>{artist?.nom || 'Artiste a venir'}</a>
+      </h3>
+    </div>
+    {artist?.description && <p class="text-sm leading-6 text-slate-600">{artist.description}</p>}
+    <div class="flex items-center justify-between gap-3 pt-2 text-sm text-slate-500">
+      <span>{artist?.jour || 'Jour a confirmer'}</span>
+      {artist?.genreSlug && <a href={`/artistes/genre/${artist.genreSlug}`} class="font-semibold text-amber-600">Genre</a>}
+    </div>
+  </div>
 </article>

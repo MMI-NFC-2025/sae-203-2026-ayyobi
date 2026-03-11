@@ -1,19 +1,18 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
 import ArtistCard from '../../components/ArtistCard.astro';
+import { getArtistes } from '../../lib/backend.mjs';
 
-const artists = [
-  { id: 'luna-wave', name: 'Luna Wave', genre: 'Electro pop', day: 'Vendredi' },
-  { id: 'nox-club', name: 'Nox Club', genre: 'Techno live', day: 'Samedi' },
-  { id: 'soleil-brut', name: 'Soleil Brut', genre: 'Rock francais', day: 'Dimanche' },
-];
+const artists = await getArtistes();
 ---
 
-<BaseLayout title="Artistes" description="Liste des artistes du festival.">
-  <section class="container page-section">
-    <h1>Artistes</h1>
-    <div class="grid">
-      {artists.map((artist) => <ArtistCard {...artist} />)}
+<BaseLayout title="Artistes" description="Tous les artistes du festival">
+  <Hero title="Artistes" subtitle="Explore tous les artistes invites du festival." />
+
+  <section class="mx-auto w-full max-w-6xl px-4 py-8">
+    <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      {artists.map((artist) => <ArtistCard artist={artist} />)}
     </div>
   </section>
 </BaseLayout>

@@ -1,19 +1,18 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
 import SceneCard from '../../components/SceneCard.astro';
+import { getScenes } from '../../lib/backend.mjs';
 
-const scenes = [
-  { id: 'horizon', name: 'Scene Horizon', description: 'Grande scene pour les tete d affiche.' },
-  { id: 'orbit', name: 'Scene Orbit', description: 'Espace dedie aux sets electroniques.' },
-  { id: 'lab', name: 'Scene Lab', description: 'Ateliers, talks et formats intimistes.' },
-];
+const scenes = await getScenes();
 ---
 
-<BaseLayout title="Scenes" description="Les scenes du festival Astro.">
-  <section class="container page-section">
-    <h1>Scenes</h1>
-    <div class="grid">
-      {scenes.map((scene) => <SceneCard {...scene} />)}
+<BaseLayout title="Scenes" description="Toutes les scenes du festival">
+  <Hero title="Scenes" subtitle="Decouvre les espaces du festival et leurs ambiances." />
+
+  <section class="mx-auto w-full max-w-6xl px-4 py-8">
+    <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      {scenes.map((scene) => <SceneCard scene={scene} />)}
     </div>
   </section>
 </BaseLayout>

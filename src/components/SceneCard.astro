@@ -1,14 +1,18 @@
 ---
-interface Props {
-  id: string;
-  name: string;
-  description: string;
-}
+import PocketImage from './PocketImage.astro';
 
-const { id, name, description } = Astro.props;
+const { scene } = Astro.props;
 ---
 
-<article class="card">
-  <h3><a href={`/scenes/${id}`}>{name}</a></h3>
-  <p>{description}</p>
+<article class="rounded-3xl border border-slate-200 bg-white shadow-sm">
+  <div class="overflow-hidden rounded-t-3xl bg-slate-100">
+    <PocketImage src={scene?.photo} alt={scene?.nom || 'Scene'} className="aspect-[4/3]" />
+  </div>
+  <div class="space-y-3 p-5">
+    <h3 class="text-xl font-bold text-slate-950">
+      <a href={`/scenes/${scene?.id}`}>{scene?.nom || 'Scene a venir'}</a>
+    </h3>
+    <p class="text-sm leading-6 text-slate-600">{scene?.description || 'Description a venir.'}</p>
+    <p class="text-sm text-slate-500">{scene?.localisation || 'Localisation a confirmer'}</p>
+  </div>
 </article>

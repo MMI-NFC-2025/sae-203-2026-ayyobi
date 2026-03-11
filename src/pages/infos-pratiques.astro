@@ -1,28 +1,35 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import FAQItem from '../components/FAQItem.astro';
+import Hero from '../components/Hero.astro';
+import FaqAccordion from '../components/FaqAccordion.astro';
+import { getFaq, getTarifs } from '../lib/backend.mjs';
 
-const faq = [
-  {
-    question: 'Ou se tient le festival ?',
-    answer: 'Au parc des expositions, a 10 minutes du centre-ville.',
-  },
-  {
-    question: 'Comment venir ?',
-    answer: 'Navettes, transports en commun et parking velo sont proposes.',
-  },
-  {
-    question: 'Le site est-il accessible ?',
-    answer: 'Oui, des espaces adaptes sont prevus sur chaque scene.',
-  },
-];
+const [faq, tarifs] = await Promise.all([getFaq(), getTarifs()]);
 ---
 
-<BaseLayout title="Infos pratiques" description="Acces, horaires et FAQ.">
-  <section class="container page-section">
-    <h1>Infos pratiques</h1>
-    <div class="stack">
-      {faq.map((item) => <FAQItem {...item} />)}
+<BaseLayout title="Infos pratiques" description="Informations pratiques du festival">
+  <Hero
+    title="Infos pratiques"
+    subtitle="Horaires, acces, billetterie et questions frequentes."
+  />
+
+  <section class="mx-auto grid w-full max-w-6xl gap-10 px-4 py-8 lg:grid-cols-[0.9fr_1.1fr]">
+    <div class="space-y-4">
+      <h2 class="text-2xl font-black">Tarifs</h2>
+      {tarifs.map((tarif) => (
+        <article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <h3 class="text-lg font-bold">{tarif.nom_tarif}</h3>
+          <p class="mt-2 text-sm text-slate-600">{tarif.description}</p>
+          <p class="mt-4 text-2xl font-black">{tarif.prix} EUR</p>
+        </article>
+      ))}
+    </div>
+
+    <div>
+      <h2 class="text-2xl font-black">FAQ</h2>
+      <div class="mt-4">
+        <FaqAccordion items={faq} />
+      </div>
     </div>
   </section>
 </BaseLayout>

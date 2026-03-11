@@ -1,20 +1,21 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ProgramItem from '../components/ProgramItem.astro';
+import Hero from '../components/Hero.astro';
+import ProgramCard from '../components/ProgramCard.astro';
+import { getProgrammation } from '../lib/backend.mjs';
 
-const program = [
-  { time: '17:00', title: 'Ouverture des portes', stage: 'Parvis' },
-  { time: '19:30', title: 'Soleil Brut', stage: 'Scene Horizon' },
-  { time: '21:00', title: 'Atelier synthese', stage: 'Lab' },
-  { time: '23:30', title: 'Closing DJ set', stage: 'Scene Orbit' },
-];
+const programme = await getProgrammation();
 ---
 
-<BaseLayout title="Programme" description="Programme du festival Astro.">
-  <section class="container page-section">
-    <h1>Programme</h1>
-    <div class="stack">
-      {program.map((item) => <ProgramItem {...item} />)}
+<BaseLayout title="Programme" description="Programme du festival">
+  <Hero
+    title="Programme"
+    subtitle="Tous les passages, scenes et artistes du festival."
+  />
+
+  <section class="mx-auto w-full max-w-6xl px-4 py-8">
+    <div class="grid gap-4">
+      {programme.map((item) => <ProgramCard item={item} />)}
     </div>
   </section>
 </BaseLayout>

@@ -1,37 +1,37 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PocketImage from '../../components/PocketImage.astro';
+import ProgramCard from '../../components/ProgramCard.astro';
+import { getScenes, getScene, getProgrammationParScene } from '../../lib/backend.mjs';
 
-const scenes = [
-  {
-    id: 'horizon',
-    name: 'Scene Horizon',
-    description: 'La grande scene exterieure pour les concerts majeurs.',
-  },
-  {
-    id: 'orbit',
-    name: 'Scene Orbit',
-    description: 'Le coeur nocturne du festival, dedie aux musiques electroniques.',
-  },
-  {
-    id: 'lab',
-    name: 'Scene Lab',
-    description: 'Formats courts, rencontres et experimentation sonore.',
-  },
-];
-
-export function getStaticPaths() {
-  return scenes.map((scene) => ({
-    params: { id: scene.id },
-    props: { scene },
-  }));
+export async function getStaticPaths() {
+  const scenes = await getScenes();
+  return scenes.map((scene) => ({ params: { id: scene.id } }));
 }
 
-const { scene } = Astro.props;
+const { id } = Astro.params;
+const [scene, programme] = await Promise.all([
+  getScene(id),
+  getProgrammationParScene(id),
+]);
 ---
 
-<BaseLayout title={scene.name} description={scene.description}>
-  <section class="container page-section">
-    <h1>{scene.name}</h1>
-    <p>{scene.description}</p>
+<BaseLayout title={scene.nom} description={scene.description || scene.nom}>
+  <section class="mx-auto grid w-full max-w-6xl gap-8 px-4 py-12 lg:grid-cols-[1fr_1fr]">
+    <div class="overflow-hidden rounded-[2rem] bg-slate-100">
+      <PocketImage src={scene.photo} alt={scene.nom} className="aspect-[4/3]" />
+    </div>
+    <div>
+      <h1 class="text-4xl font-black">{scene.nom}</h1>
+      <p class="mt-5 text-base leading-7 text-slate-600">{scene.description}</p>
+      <p class="mt-4 text-sm text-slate-500">{scene.localisation}</p>
+    </div>
+  </section>
+
+  <section class="mx-auto w-full max-w-6xl px-4 pb-12">
+    <h2 class="text-2xl font-black">Programmation de la scene</h2>
+    <div class="mt-6 grid gap-4">
+      {programme.map((item) => <ProgramCard item={item} />)}
+    </div>
   </section>
 </BaseLayout>
