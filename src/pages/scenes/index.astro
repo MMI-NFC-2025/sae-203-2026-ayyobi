@@ -1,18 +1,67 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Hero from '../../components/Hero.astro';
-import SceneCard from '../../components/SceneCard.astro';
-import { getScenes } from '../../lib/backend.mjs';
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SceneCard from "../../components/SceneCard.astro";
+import { getAllScenesSortedByName } from "../../lib/backend.mjs";
 
-const scenes = await getScenes();
+const scenes = await getAllScenesSortedByName();
 ---
 
-<BaseLayout title="Scenes" description="Toutes les scenes du festival">
-  <Hero title="Scenes" subtitle="Decouvre les espaces du festival et leurs ambiances." />
+<BaseLayout
+  title="Scènes | Les Rives du Territoire"
+  description="Découvrez les différentes scènes du festival Les Rives du Territoire."
+>
+  <section class="border-b border-white/10 bg-[#1b2230]">
+    <div class="mx-auto max-w-7xl px-4 py-16 md:px-6 md:py-24">
+      <h1 class="font-mono text-5xl font-bold text-white md:text-7xl">
+        Les scènes
+      </h1>
 
-  <section class="mx-auto w-full max-w-6xl px-4 py-8">
-    <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-      {scenes.map((scene) => <SceneCard scene={scene} />)}
+      <p class="mt-6 max-w-3xl text-lg leading-8 text-white/80 md:text-2xl">
+        Découvrez les différents espaces du festival et l’ambiance propre à
+        chaque scène.
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-4 py-16 md:px-6">
+    {
+      scenes.length > 0 ? (
+        <div class="grid gap-6 md:grid-cols-2">
+          {scenes.map((scene) => (
+            <SceneCard scene={scene} />
+          ))}
+        </div>
+      ) : (
+        <div class="rounded-[24px] border border-white/10 bg-[#222b3b] p-8 text-center">
+          <p class="text-base text-white/70">
+            Aucune scène n’est disponible pour le moment.
+          </p>
+        </div>
+      )
+    }
+  </section>
+
+  <section class="border-t border-white/10 bg-[#182030]">
+    <div class="mx-auto max-w-7xl px-4 py-16 text-center md:px-6">
+      <h2 class="font-mono text-4xl font-bold text-white md:text-5xl">
+        Découvrez tous les artistes en live
+      </h2>
+
+      <p
+        class="mx-auto mt-6 max-w-3xl text-base leading-8 text-white/80 md:text-xl"
+      >
+        Rejoignez-nous pour vivre des performances inoubliables sur les scènes
+        du festival.
+      </p>
+
+      <div class="mt-8">
+        <a
+          href="/artistes"
+          class="inline-flex items-center justify-center rounded-full bg-white px-8 py-4 text-base font-semibold text-[#7c3aed] transition hover:opacity-90"
+        >
+          Acheter vos billets maintenant
+        </a>
+      </div>
     </div>
   </section>
 </BaseLayout>

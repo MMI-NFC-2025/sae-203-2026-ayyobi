@@ -1,37 +1,126 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import PocketImage from '../../components/PocketImage.astro';
-import ProgramCard from '../../components/ProgramCard.astro';
-import { getScenes, getScene, getProgrammationParScene } from '../../lib/backend.mjs';
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PocketImage from "../../components/PocketImage.astro";
+import ArtistCard from "../../components/ArtistCard.astro";
+import {
+  getScenes,
+  getSceneById,
+  getArtistsBySceneId,
+} from "../../lib/backend.mjs";
 
 export async function getStaticPaths() {
   const scenes = await getScenes();
-  return scenes.map((scene) => ({ params: { id: scene.id } }));
+
+  return scenes.map((scene) => ({
+    params: { id: scene.id },
+  }));
 }
 
 const { id } = Astro.params;
-const [scene, programme] = await Promise.all([
-  getScene(id),
-  getProgrammationParScene(id),
-]);
+
+const scene = await getSceneById(id);
+const artists = await getArtistsBySceneId(id);
 ---
 
-<BaseLayout title={scene.nom} description={scene.description || scene.nom}>
-  <section class="mx-auto grid w-full max-w-6xl gap-8 px-4 py-12 lg:grid-cols-[1fr_1fr]">
-    <div class="overflow-hidden rounded-[2rem] bg-slate-100">
-      <PocketImage src={scene.photo} alt={scene.nom} className="aspect-[4/3]" />
-    </div>
-    <div>
-      <h1 class="text-4xl font-black">{scene.nom}</h1>
-      <p class="mt-5 text-base leading-7 text-slate-600">{scene.description}</p>
-      <p class="mt-4 text-sm text-slate-500">{scene.localisation}</p>
+<BaseLayout
+  title={`${scene.nom_scene} | Les Rives du Territoire`}
+  description={scene.description_scene}
+>
+  <section class="border-b border-white/10 bg-[#1b2230]">
+    <div class="mx-auto max-w-7xl px-4 py-16 md:px-6 md:py-24">
+      <p
+        class="text-sm font-semibold uppercase tracking-[0.2em] text-[#facc15]"
+      >
+        Scène
+      </p>
+
+      <h1 class="mt-4 font-mono text-5xl font-bold text-white md:text-7xl">
+        {scene.nom_scene}
+      </h1>
+
+      {
+        scene.description_scene && (
+          <p class="mt-6 max-w-3xl text-lg leading-8 text-white/80 md:text-2xl">
+            {scene.description_scene}
+          </p>
+        )
+      }
     </div>
   </section>
 
-  <section class="mx-auto w-full max-w-6xl px-4 pb-12">
-    <h2 class="text-2xl font-black">Programmation de la scene</h2>
-    <div class="mt-6 grid gap-4">
-      {programme.map((item) => <ProgramCard item={item} />)}
+  <section class="mx-auto max-w-7xl px-4 py-16 md:px-6">
+    <div class="grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-start">
+      <div
+        class="overflow-hidden rounded-[28px] border border-white/10 bg-[#222b3b]"
+      >
+        <PocketImage
+          record={scene}
+          field="photo_scene"
+          alt={scene.nom_scene}
+          class="aspect-[4/3] w-full object-cover object-center"
+        />
+      </div>
+
+      <div>
+        <h2 class="font-mono text-3xl font-bold text-white md:text-4xl">
+          À propos de cette scène
+        </h2>
+
+        <div
+          class="mt-6 space-y-4 text-base leading-8 text-white/75 md:text-lg"
+        >
+          {scene.description_scene && <p>{scene.description_scene}</p>}
+
+          {
+            scene.localisation && scene.localisation !== "N/A" && (
+              <p>
+                <span class="font-semibold text-white">Localisation :</span>{" "}
+                {scene.localisation}
+              </p>
+            )
+          }
+
+          {
+            scene.capacite && (
+              <p>
+                <span class="font-semibold text-white">Capacité :</span>{" "}
+                {scene.capacite} personnes
+              </p>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-[#182030]">
+    <div class="mx-auto max-w-7xl px-4 py-16 md:px-6">
+      <div class="max-w-3xl">
+        <h2 class="font-mono text-4xl font-bold text-white md:text-5xl">
+          Artistes programmés
+        </h2>
+
+        <p class="mt-4 text-base leading-8 text-white/75 md:text-lg">
+          Retrouvez tous les artistes qui se produisent sur {scene.nom_scene},
+          triés par date de représentation.
+        </p>
+      </div>
+
+      <div class="mt-10">
+        {
+          artists.length > 0 ? (
+            <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+              {artists.map((item) => (
+                <ArtistCard item={item} />
+              ))}
+            </div>
+          ) : (
+            <div class="rounded-[24px] border border-white/10 bg-[#222b3b] p-8 text-center text-white/70">
+              Aucun artiste n’est programmé sur cette scène.
+            </div>
+          )
+        }
+      </div>
     </div>
   </section>
 </BaseLayout>
