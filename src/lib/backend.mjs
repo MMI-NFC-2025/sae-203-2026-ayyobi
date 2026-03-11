@@ -129,7 +129,7 @@ export async function getProgramByDay(jour) {
  */
 export async function getPartners() {
   return await pb.collection("partenaires").getFullList({
-    sort: "-ordre_affichage",
+    sort: "+ordre_affichage",
   });
 }
 
@@ -138,7 +138,7 @@ export async function getPartners() {
  */
 export async function getTarifs() {
   return await pb.collection("tarifs").getFullList({
-    sort: "-ordre_affichage",
+    sort: "+ordre_affichage",
   });
 }
 
@@ -147,7 +147,7 @@ export async function getTarifs() {
  */
 export async function getFaqs() {
   return await pb.collection("faq").getFullList({
-    sort: "-ordre_affichage",
+    sort: "+ordre_affichage",
   });
 }
 
@@ -170,18 +170,13 @@ export async function getScenes() {
 }
 
 /**
- * Équipe
+ * Liste de l'équipe
  */
 export async function getTeam() {
-  try {
-    return await pb.collection("equipe").getFullList({
-      sort: "ordre_affichage",
-    });
-  } catch (error) {
-    return [];
-  }
+  return await pb.collection("equipe").getFullList({
+    sort: "+ordre_affichage",
+  });
 }
-
 
 /**
  * Ajouter ou modifier un artiste ou une scène
