@@ -1,0 +1,17 @@
+---
+interface Props {
+  time: string;
+  title: string;
+  stage: string;
+}
+
+const { time, title, stage } = Astro.props;
+---
+
+<article class="program-item">
+  <strong>{time}</strong>
+  <div>
+    <h3>{title}</h3>
+    <p>{stage}</p>
+  </div>
+</article>

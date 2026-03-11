@@ -1,0 +1,22 @@
+---
+interface Props {
+  title: string;
+  subtitle: string;
+  ctaHref?: string;
+  ctaLabel?: string;
+}
+
+const {
+  title,
+  subtitle,
+  ctaHref = '/programme',
+  ctaLabel = 'Voir le programme',
+} = Astro.props;
+---
+
+<section class="hero container">
+  <p class="eyebrow">Edition 2026</p>
+  <h1>{title}</h1>
+  <p>{subtitle}</p>
+  <a class="button" href={ctaHref}>{ctaLabel}</a>
+</section>

@@ -1,10 +1,55 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import ArtistCard from '../components/ArtistCard.astro';
+import ProgramItem from '../components/ProgramItem.astro';
+import PartnerLogo from '../components/PartnerLogo.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const artists = [
+  { id: 'luna-wave', name: 'Luna Wave', genre: 'Electro pop', day: 'Vendredi' },
+  { id: 'nox-club', name: 'Nox Club', genre: 'Techno live', day: 'Samedi' },
+  { id: 'soleil-brut', name: 'Soleil Brut', genre: 'Rock francais', day: 'Dimanche' },
+];
+
+const highlights = [
+  { time: '18:00', title: 'Ouverture du site', stage: 'Esplanade' },
+  { time: '20:30', title: 'Luna Wave', stage: 'Scene Horizon' },
+  { time: '23:00', title: 'Nox Club', stage: 'Scene Orbit' },
+];
+
+const partners = ['Ville', 'Radio Campus', 'Studio 203'];
 ---
 
-<Layout>
-	<h1>Welcome to Astro!</h1>
-</Layout>
+<BaseLayout title="Festival Astro" description="Accueil du festival Astro.">
+  <Hero
+    title="Le festival qui fait vibrer la ville"
+    subtitle="Une experience musicale sur trois scenes, avec artistes emergents, live sets et rencontres."
+  />
+
+  <section class="container section-grid">
+    <div>
+      <h2>Artistes a l'affiche</h2>
+      <div class="grid">
+        {artists.map((artist) => <ArtistCard {...artist} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="container section-grid">
+    <div>
+      <h2>Temps forts</h2>
+      <div class="stack">
+        {highlights.map((item) => <ProgramItem {...item} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="container section-grid">
+    <div>
+      <h2>Partenaires</h2>
+      <div class="partners">
+        {partners.map((partner) => <PartnerLogo name={partner} />)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

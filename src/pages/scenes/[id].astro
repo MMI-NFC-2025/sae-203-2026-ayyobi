@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const scenes = [
+  {
+    id: 'horizon',
+    name: 'Scene Horizon',
+    description: 'La grande scene exterieure pour les concerts majeurs.',
+  },
+  {
+    id: 'orbit',
+    name: 'Scene Orbit',
+    description: 'Le coeur nocturne du festival, dedie aux musiques electroniques.',
+  },
+  {
+    id: 'lab',
+    name: 'Scene Lab',
+    description: 'Formats courts, rencontres et experimentation sonore.',
+  },
+];
+
+export function getStaticPaths() {
+  return scenes.map((scene) => ({
+    params: { id: scene.id },
+    props: { scene },
+  }));
+}
+
+const { scene } = Astro.props;
+---
+
+<BaseLayout title={scene.name} description={scene.description}>
+  <section class="container page-section">
+    <h1>{scene.name}</h1>
+    <p>{scene.description}</p>
+  </section>
+</BaseLayout>

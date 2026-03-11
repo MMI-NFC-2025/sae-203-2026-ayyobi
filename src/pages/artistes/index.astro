@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArtistCard from '../../components/ArtistCard.astro';
+
+const artists = [
+  { id: 'luna-wave', name: 'Luna Wave', genre: 'Electro pop', day: 'Vendredi' },
+  { id: 'nox-club', name: 'Nox Club', genre: 'Techno live', day: 'Samedi' },
+  { id: 'soleil-brut', name: 'Soleil Brut', genre: 'Rock francais', day: 'Dimanche' },
+];
+---
+
+<BaseLayout title="Artistes" description="Liste des artistes du festival.">
+  <section class="container page-section">
+    <h1>Artistes</h1>
+    <div class="grid">
+      {artists.map((artist) => <ArtistCard {...artist} />)}
+    </div>
+  </section>
+</BaseLayout>

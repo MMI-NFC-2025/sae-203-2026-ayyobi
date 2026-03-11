@@ -1,5 +1,23 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/QH_p-_Ks)
-- Nom:
-- Prénom:
-- url: 
+# Festival Astro
 
+Structure Astro pour un site de festival.
+
+## Arborescence principale
+
+- `BACKEND/`
+- `public/`
+- `src/components/`
+- `src/layouts/`
+- `src/lib/`
+- `src/pages/`
+- `src/styles/`
+
+## Demarrage
+
+```bash
+npm run dev
+```
+
+## Variable d'environnement
+
+Copier `.env.example` vers `.env` puis ajuster `PUBLIC_POCKETBASE_URL` si necessaire.

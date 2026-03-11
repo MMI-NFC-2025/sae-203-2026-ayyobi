@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SceneCard from '../../components/SceneCard.astro';
+
+const scenes = [
+  { id: 'horizon', name: 'Scene Horizon', description: 'Grande scene pour les tete d affiche.' },
+  { id: 'orbit', name: 'Scene Orbit', description: 'Espace dedie aux sets electroniques.' },
+  { id: 'lab', name: 'Scene Lab', description: 'Ateliers, talks et formats intimistes.' },
+];
+---
+
+<BaseLayout title="Scenes" description="Les scenes du festival Astro.">
+  <section class="container page-section">
+    <h1>Scenes</h1>
+    <div class="grid">
+      {scenes.map((scene) => <SceneCard {...scene} />)}
+    </div>
+  </section>
+</BaseLayout>

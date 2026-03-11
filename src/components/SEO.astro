@@ -1,0 +1,14 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'Festival Astro, programmation, artistes, scenes et informations pratiques.',
+} = Astro.props;
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />

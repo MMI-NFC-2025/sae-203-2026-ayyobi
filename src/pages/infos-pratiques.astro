@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FAQItem from '../components/FAQItem.astro';
+
+const faq = [
+  {
+    question: 'Ou se tient le festival ?',
+    answer: 'Au parc des expositions, a 10 minutes du centre-ville.',
+  },
+  {
+    question: 'Comment venir ?',
+    answer: 'Navettes, transports en commun et parking velo sont proposes.',
+  },
+  {
+    question: 'Le site est-il accessible ?',
+    answer: 'Oui, des espaces adaptes sont prevus sur chaque scene.',
+  },
+];
+---
+
+<BaseLayout title="Infos pratiques" description="Acces, horaires et FAQ.">
+  <section class="container page-section">
+    <h1>Infos pratiques</h1>
+    <div class="stack">
+      {faq.map((item) => <FAQItem {...item} />)}
+    </div>
+  </section>
+</BaseLayout>

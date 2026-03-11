@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProgramItem from '../components/ProgramItem.astro';
+
+const program = [
+  { time: '17:00', title: 'Ouverture des portes', stage: 'Parvis' },
+  { time: '19:30', title: 'Soleil Brut', stage: 'Scene Horizon' },
+  { time: '21:00', title: 'Atelier synthese', stage: 'Lab' },
+  { time: '23:30', title: 'Closing DJ set', stage: 'Scene Orbit' },
+];
+---
+
+<BaseLayout title="Programme" description="Programme du festival Astro.">
+  <section class="container page-section">
+    <h1>Programme</h1>
+    <div class="stack">
+      {program.map((item) => <ProgramItem {...item} />)}
+    </div>
+  </section>
+</BaseLayout>

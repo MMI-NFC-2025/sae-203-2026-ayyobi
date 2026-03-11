@@ -1,0 +1,16 @@
+---
+interface Props {
+  id: string;
+  name: string;
+  genre: string;
+  day: string;
+}
+
+const { id, name, genre, day } = Astro.props;
+---
+
+<article class="card">
+  <h3><a href={`/artistes/${id}`}>{name}</a></h3>
+  <p>{genre}</p>
+  <p>{day}</p>
+</article>

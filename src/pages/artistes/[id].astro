@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const artists = [
+  {
+    id: 'luna-wave',
+    name: 'Luna Wave',
+    genre: 'Electro pop',
+    description: 'Duo de synth-pop aux textures lumineuses.',
+  },
+  {
+    id: 'nox-club',
+    name: 'Nox Club',
+    genre: 'Techno live',
+    description: 'Set hybride entre machines analogiques et visuals live.',
+  },
+  {
+    id: 'soleil-brut',
+    name: 'Soleil Brut',
+    genre: 'Rock francais',
+    description: 'Guitares brutes, refrains directs et energie de scene.',
+  },
+];
+
+export function getStaticPaths() {
+  return artists.map((artist) => ({
+    params: { id: artist.id },
+    props: { artist },
+  }));
+}
+
+const { artist } = Astro.props;
+---
+
+<BaseLayout title={artist.name} description={artist.description}>
+  <section class="container page-section">
+    <h1>{artist.name}</h1>
+    <p>{artist.genre}</p>
+    <p>{artist.description}</p>
+  </section>
+</BaseLayout>
