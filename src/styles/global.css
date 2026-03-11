@@ -1,4 +1,16 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #1b2230;
+  --surface: #111827;
+  --card: #1a1f3a;
+  --text: #f8fafc;
+  --muted: #cbd5e1;
+  --accent: #ffd000;
+  --accent-2: #7c3aed;
+}
 
 html {
   scroll-behavior: smooth;
@@ -6,9 +18,53 @@ html {
 
 body {
   margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+}
+
+p {
+  margin: 0;
 }
 
 a {
   text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+@layer components {
+  .container-site {
+    @apply mx-auto max-w-7xl px-4 lg:px-8;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-full bg-[var(--accent)] px-6 py-3 font-semibold text-black transition hover:opacity-90;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-full border border-white/20 px-6 py-3 font-semibold text-white transition hover:bg-white/5;
+  }
+
+  .card-dark {
+    @apply rounded-3xl bg-[var(--card)] shadow-lg;
+  }
+
+  .section-title {
+    @apply text-3xl font-bold text-white md:text-4xl;
+  }
+
+  .section-text {
+    @apply text-base leading-7 text-white/75;
+  }
 }
