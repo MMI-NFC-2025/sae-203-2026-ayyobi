@@ -1,22 +1,101 @@
 ---
-const links = [
-  { href: '/festival', label: 'Festival' },
-  { href: '/programme', label: 'Programme' },
-  { href: '/artistes', label: 'Artistes' },
-  { href: '/scenes', label: 'Scenes' },
-  { href: '/infos-pratiques', label: 'Infos pratiques' },
-  { href: '/contact', label: 'Contact' },
-  { href: '/login', label: 'Login' },
+const navLinks = [
+  { href: "/festival", label: "Le Festival" },
+  { href: "/programme", label: "Programme" },
+  { href: "/artistes", label: "Artistes" },
+  { href: "/scenes", label: "Scènes" },
+  { href: "/infos-pratiques", label: "Info pratique" },
+  { href: "/contact", label: "Contact" },
 ];
 ---
 
-<header class="border-b border-slate-200 bg-white/90 backdrop-blur">
-  <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4">
-    <a href="/" class="text-lg font-black uppercase tracking-[0.2em] text-slate-950">
-      Festival
-    </a>
-    <nav class="hidden items-center gap-6 text-sm font-medium text-slate-600 md:flex">
-      {links.map((link) => <a href={link.href} class="transition hover:text-slate-950">{link.label}</a>)}
+<header
+  class="sticky top-0 z-50 border-b border-white/10 bg-[#1f2937]/95 backdrop-blur"
+>
+  <div class="mx-auto max-w-7xl px-4">
+    <div class="flex min-h-[72px] items-center justify-between gap-4">
+      <a href="/" class="inline-flex items-center" aria-label="Accueil Les Rives du Territoire">
+        <img
+          src="/images/logo.svg"
+          alt="Les Rives du Territoire"
+          class="h-14 w-auto"
+        />
+      </a>
+
+      <nav class="hidden md:block" aria-label="Navigation principale">
+        <ul class="flex items-center gap-8">
+          {
+            navLinks.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="text-sm font-medium text-white/85 transition hover:text-[#facc15]"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <button
+        id="menu-button"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-md border border-white/15 text-white md:hidden"
+        aria-label="Ouvrir le menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        type="button"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="1.8"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div
+    id="mobile-menu"
+    class="hidden border-t border-white/10 bg-[#1f2937] md:hidden"
+  >
+    <nav class="mx-auto max-w-7xl px-4 py-3" aria-label="Navigation mobile">
+      <ul class="flex flex-col">
+        {
+          navLinks.map((link) => (
+            <li class="border-b border-white/5 last:border-b-0">
+              <a
+                href={link.href}
+                class="block py-3 text-sm font-medium text-white/85 transition hover:text-[#facc15]"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
     </nav>
   </div>
 </header>
+
+<script>
+  const menuButton = document.getElementById("menu-button");
+  const mobileMenu = document.getElementById("mobile-menu");
+
+  if (menuButton && mobileMenu) {
+    menuButton.addEventListener("click", () => {
+      const isExpanded = menuButton.getAttribute("aria-expanded") === "true";
+      menuButton.setAttribute("aria-expanded", String(!isExpanded));
+      mobileMenu.classList.toggle("hidden");
+    });
+  }
+</script>
