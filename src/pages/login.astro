@@ -1,18 +1,131 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<BaseLayout title="Login" description="Connexion festival">
-  <section class="mx-auto w-full max-w-xl px-4 py-16">
-    <div class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
-      <h1 class="text-center text-3xl font-black">Connexion</h1>
-      <form class="mt-8 grid gap-4">
-        <input type="email" placeholder="Email" class="rounded-xl border border-slate-300 px-4 py-3" />
-        <input type="password" placeholder="Mot de passe" class="rounded-xl border border-slate-300 px-4 py-3" />
-        <button type="submit" class="rounded-full bg-slate-950 px-5 py-3 text-sm font-bold text-white">
-          Se connecter
-        </button>
+<BaseLayout
+  title="Connexion | Les Rives du Territoire"
+  description="Connectez-vous à votre espace festival."
+>
+  <section class="border-b border-white/10 bg-[#1b2230]">
+    <div class="mx-auto max-w-7xl px-4 py-16 md:px-6 md:py-20">
+      <h1 class="font-mono text-5xl font-bold text-white md:text-7xl">
+        Connexion
+      </h1>
+
+      <p class="mt-5 max-w-3xl text-lg leading-8 text-white/80 md:text-2xl">
+        Connectez-vous avec votre adresse email pour accéder à votre espace.
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-4 py-16 md:px-6">
+    <div
+      class="mx-auto max-w-xl rounded-[28px] border border-white/10 bg-[#222b3b] p-6 md:p-8"
+    >
+      <h2 class="font-mono text-3xl font-bold text-white md:text-4xl">
+        Se connecter
+      </h2>
+
+      <p class="mt-4 text-sm leading-7 text-white/75 md:text-base">
+        Entrez vos identifiants pour vous connecter.
+      </p>
+
+      <form id="loginForm" class="mt-8 space-y-5">
+        <div>
+          <label
+            for="email"
+            class="mb-2 block text-sm font-semibold text-white/85"
+          >
+            Email
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            placeholder="votre@email.com"
+            class="w-full rounded-2xl border border-white/10 bg-[#1b2230] px-4 py-3 text-white placeholder:text-white/35 outline-none transition focus:border-[#facc15]"
+          />
+        </div>
+
+        <div>
+          <label
+            for="password"
+            class="mb-2 block text-sm font-semibold text-white/85"
+          >
+            Mot de passe
+          </label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            required
+            placeholder="Votre mot de passe"
+            class="w-full rounded-2xl border border-white/10 bg-[#1b2230] px-4 py-3 text-white placeholder:text-white/35 outline-none transition focus:border-[#facc15]"
+          />
+        </div>
+
+        <p
+          id="loginMessage"
+          class="hidden rounded-2xl border border-white/10 bg-[#1b2230] px-4 py-3 text-sm"
+        >
+        </p>
+
+        <div class="flex flex-wrap items-center gap-4">
+          <button
+            type="submit"
+            class="inline-flex items-center justify-center rounded-full bg-[#facc15] px-8 py-3.5 text-sm font-semibold text-black transition hover:opacity-90"
+          >
+            Se connecter
+          </button>
+
+          <a
+            href="/"
+            class="inline-flex items-center justify-center rounded-full border border-white/12 px-6 py-3 text-sm font-semibold text-white/85 transition hover:border-white/25 hover:bg-white/5"
+          >
+            Retour à l’accueil
+          </a>
+        </div>
       </form>
     </div>
   </section>
+
+  <script type="module">
+    import { pb } from "../lib/pocketbase.js";
+
+    const form = document.getElementById("loginForm");
+    const message = document.getElementById("loginMessage");
+
+    function showMessage(text, isError = false) {
+      message.textContent = text;
+      message.classList.remove(
+        "hidden",
+        "text-green-300",
+        "text-red-300",
+        "border-red-400/20",
+        "border-green-400/20",
+      );
+      message.classList.add(isError ? "text-red-300" : "text-green-300");
+      message.classList.add(
+        isError ? "border-red-400/20" : "border-green-400/20",
+      );
+    }
+
+    form?.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const email = form.email.value.trim();
+      const password = form.password.value.trim();
+
+      try {
+        await pb.collection("users").authWithPassword(email, password);
+        showMessage("Connexion réussie.");
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 1000);
+      } catch (error) {
+        showMessage("Email ou mot de passe incorrect.", true);
+      }
+    });
+  </script>
 </BaseLayout>

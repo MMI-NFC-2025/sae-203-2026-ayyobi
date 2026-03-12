@@ -1,9 +1,9 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import SceneCard from "../../components/SceneCard.astro";
-import { getAllScenesSortedByName } from "../../lib/backend.mjs";
+import { getScenes } from "../../lib/backend.mjs";
 
-const scenes = await getAllScenesSortedByName();
+const scenes = await getScenes();
 ---
 
 <BaseLayout
