@@ -1,38 +1,47 @@
 import {
   getAllArtistsSortedByDate,
-  getAllScenesSortedByName,
-  getAllArtistsSortedByName,
+  getScenes,
+  getArtists,
   getArtistById,
   getSceneById,
   getArtistsBySceneId,
-  getArtistsBySceneName,
+  getProgramByDay,
+  getGenres,
+  getDays,
 } from "./backend.mjs";
 
 async function test() {
-  console.log("=== Artistes triés par date ===");
+  console.log("=== Artistes tries par date ===");
   console.log(await getAllArtistsSortedByDate());
 
-  console.log("=== Scènes triées par nom ===");
-  console.log(await getAllScenesSortedByName());
+  console.log("=== Scenes triees par nom ===");
+  console.log(await getScenes());
 
-  console.log("=== Artistes triés par nom ===");
-  console.log(await getAllArtistsSortedByName());
+  console.log("=== Artistes tries par nom ===");
+  console.log(await getArtists());
 
   // Remplace par de vrais ids de ta base
   const artistId = "xum7ottta0n7x7n";
   const sceneId = "dtppacxhw0c034h";
+  const jour = "Vendredi";
 
   console.log("=== Artiste par id ===");
   console.log(await getArtistById(artistId));
 
-  console.log("=== Scène par id ===");
+  console.log("=== Scene par id ===");
   console.log(await getSceneById(sceneId));
 
-  console.log("=== Artistes par scène id ===");
+  console.log("=== Programmation par scene id ===");
   console.log(await getArtistsBySceneId(sceneId));
 
-  console.log("=== Artistes par scène nom ===");
-  console.log(await getArtistsBySceneName("Scène Électronique"));
+  console.log("=== Programmation par jour ===");
+  console.log(await getProgramByDay(jour));
+
+  console.log("=== Genres disponibles ===");
+  console.log(await getGenres());
+
+  console.log("=== Jours disponibles ===");
+  console.log(await getDays());
 }
 
 test();

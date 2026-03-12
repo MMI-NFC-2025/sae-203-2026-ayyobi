@@ -1,7 +1,18 @@
-import { pb } from "./pocketbase.js";
+import { pb } from "../src/lib/pocketbase.js";
+
+function mapProgramItem(item) {
+  return {
+    programmationId: item.id,
+    date_representation: item.date_representation,
+    jour_label: item.jour_label,
+    ordre_passage: item.ordre_passage,
+    artiste: item.expand?.artiste || null,
+    scene: item.expand?.scene || null,
+  };
+}
 
 /**
- * Génère l'URL d'un fichier PocketBase
+ * Genere l'URL d'un fichier PocketBase
  */
 export function getFileUrl(record, field) {
   if (!record || !field || !record[field]) return null;
@@ -9,7 +20,7 @@ export function getFileUrl(record, field) {
 }
 
 /**
- * Génère toutes les URLs d'un champ file multiple
+ * Genere toutes les URLs d'un champ file multiple
  */
 export function getGalleryUrls(record, field) {
   if (!record || !field || !record[field] || !Array.isArray(record[field])) {
@@ -20,7 +31,7 @@ export function getGalleryUrls(record, field) {
 }
 
 /**
- * 1. Retourne la liste de tous les artistes triés par date de représentation
+ * Retourne la liste de tous les artistes tries par date de representation
  */
 export async function getAllArtistsSortedByDate() {
   const records = await pb.collection("programation").getFullList({
@@ -28,50 +39,25 @@ export async function getAllArtistsSortedByDate() {
     expand: "artiste,scene",
   });
 
-  return records.map((item) => ({
-    programmationId: item.id,
-    date_representation: item.date_representation,
-    jour_label: item.jour_label,
-    ordre_passage: item.ordre_passage,
-    artiste: item.expand?.artiste || null,
-    scene: item.expand?.scene || null,
-  }));
+  return records.map(mapProgramItem);
 }
 
 /**
- * 2. Retourne la liste de toutes les scènes triées par nom
- */
-export async function getAllScenesSortedByName() {
-  return await pb.collection("scenes").getFullList({
-    sort: "+nom_scene",
-  });
-}
-
-/**
- * 3. Retourne la liste de tous les artistes triés par ordre alphabétique
- */
-export async function getAllArtistsSortedByName() {
-  return await pb.collection("artistes").getFullList({
-    sort: "+nom_artiste",
-  });
-}
-
-/**
- * 4. Retourne les infos d'un artiste par son id
+ * Retourne les infos d'un artiste par son id
  */
 export async function getArtistById(id) {
   return await pb.collection("artistes").getOne(id);
 }
 
 /**
- * 5. Retourne les infos d'une scène par son id
+ * Retourne les infos d'une scene par son id
  */
 export async function getSceneById(id) {
   return await pb.collection("scenes").getOne(id);
 }
 
 /**
- * 6. Retourne tous les artistes d'une scène donnée par son id, triés par date
+ * Retourne toutes les programmations d'une scene donnee par son id, triees par date
  */
 export async function getArtistsBySceneId(sceneId) {
   const records = await pb.collection("programation").getFullList({
@@ -80,27 +66,7 @@ export async function getArtistsBySceneId(sceneId) {
     expand: "artiste,scene",
   });
 
-  return records.map((item) => ({
-    programmationId: item.id,
-    date_representation: item.date_representation,
-    jour_label: item.jour_label,
-    ordre_passage: item.ordre_passage,
-    artiste: item.expand?.artiste || null,
-    scene: item.expand?.scene || null,
-  }));
-}
-
-/**
- * 7. Retourne tous les artistes d'une scène donnée par son nom, triés par date
- */
-export async function getArtistsBySceneName(sceneName) {
-  const scenes = await pb.collection("scenes").getFullList({
-    filter: `nom_scene = "${sceneName}"`,
-  });
-
-  if (!scenes.length) return [];
-
-  return await getArtistsBySceneId(scenes[0].id);
+  return records.map(mapProgramItem);
 }
 
 /**
@@ -114,9 +80,8 @@ export async function getProgramByArtistId(artistId) {
   });
 }
 
-
 /**
- * Programme complet trié par date
+ * Programme complet trie par date
  */
 export async function getFullProgram() {
   return await pb.collection("programation").getFullList({
@@ -126,7 +91,7 @@ export async function getFullProgram() {
 }
 
 /**
- * Programme filtré par jour
+ * Programmation filtree par jour
  */
 export async function getProgramByDay(jour) {
   return await pb.collection("programation").getFullList({
@@ -173,7 +138,7 @@ export async function getArtists() {
 }
 
 /**
- * Liste des scènes
+ * Liste des scenes
  */
 export async function getScenes() {
   return await pb.collection("scenes").getFullList({
@@ -182,7 +147,7 @@ export async function getScenes() {
 }
 
 /**
- * Liste de l'équipe
+ * Liste de l'equipe
  */
 export async function getTeam() {
   return await pb.collection("equipe").getFullList({
@@ -191,12 +156,58 @@ export async function getTeam() {
 }
 
 /**
- * Ajouter ou modifier un artiste ou une scène
+ * Artistes filtres par genre musical
  */
-export async function saveRecord(collectionName, data, id = null) {
-  if (id) {
-    return await pb.collection(collectionName).update(id, data);
-  }
+export async function getArtistsByGenre(genre) {
+  return await pb.collection("artistes").getFullList({
+    filter: `genre_musical = "${genre}"`,
+    sort: "+nom_artiste",
+  });
+}
 
-  return await pb.collection(collectionName).create(data);
+/**
+ * Liste des genres uniques
+ */
+export async function getGenres() {
+  const artists = await getArtists();
+  return [...new Set(artists.map((artist) => artist.genre_musical).filter(Boolean))];
+}
+
+/**
+ * Liste des jours uniques depuis la programmation
+ */
+export async function getDays() {
+  const records = await pb.collection("programation").getFullList({
+    sort: "+date_representation",
+  });
+
+  return [...new Set(records.map((item) => item.jour_label).filter(Boolean))];
+}
+
+/**
+ * Connecte un utilisateur PocketBase avec email et mot de passe
+ */
+export async function loginUser(email, password) {
+  return await pb.collection("users").authWithPassword(email, password);
+}
+
+/**
+ * Retourne l'utilisateur actuellement connecte
+ */
+export function getCurrentUser() {
+  return pb.authStore.model;
+}
+
+/**
+ * Indique si un utilisateur est connecte
+ */
+export function isAuthenticated() {
+  return pb.authStore.isValid;
+}
+
+/**
+ * Deconnecte l'utilisateur courant
+ */
+export function logoutUser() {
+  pb.authStore.clear();
 }

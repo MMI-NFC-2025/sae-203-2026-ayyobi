@@ -7,7 +7,7 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "test-back": "node BACKEND/test-back.js"
+    "test-back": "node BACKEND/test_back.js"
   },
   "dependencies": {
     "astro": "^5.2.0",
