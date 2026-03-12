@@ -28,14 +28,17 @@ const transports = [
   {
     title: "En Train",
     text: "Gare de Belfort à 10 minutes en navette gratuite du festival. TGV directs depuis Paris, Lyon et Strasbourg.",
+    symbol: "🚆",
   },
   {
     title: "En Voiture",
     text: "Parkings gratuits disponibles. Suivre direction « Berges de la Savoureuse ». Covoiturage encouragé avec places réservées.",
+    symbol: "🚗",
   },
   {
     title: "Navettes",
     text: "Navettes gratuites depuis la gare, le centre-ville et les hôtels partenaires. Circulation toutes les 15 minutes.",
+    symbol: "🚌",
   },
 ];
 ---
@@ -44,164 +47,150 @@ const transports = [
   title="Infos pratiques | Les Rives du Territoire"
   description="Toutes les informations pour préparer votre venue."
 >
-  <section class="border-b border-white/10">
-    <div class="mx-auto max-w-7xl px-4 py-14 text-center md:px-6 md:py-20">
-      <h1 class="font-mono text-4xl font-bold leading-none text-white md:text-7xl">
-        Infos pratiques
-      </h1>
+  <section class="mx-auto max-w-7xl px-4 py-16 md:px-6 md:py-20">
+    <h1 class="font-mono text-5xl font-bold text-white md:text-7xl">
+      Infos Pratiques
+    </h1>
 
-      <p class="mx-auto mt-5 max-w-2xl text-sm leading-6 text-white/75 md:text-xl md:leading-8">
-        Toutes les informations pour préparer votre venue
-      </p>
+    <p class="mt-5 max-w-3xl text-lg leading-8 text-white/80 md:text-2xl">
+      Toutes les informations pour préparer votre venue
+    </p>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-4 pb-16 md:px-6">
+    <h2 class="font-mono text-3xl font-bold text-white md:text-4xl">
+      Tarifs & Billetterie
+    </h2>
+
+    {
+      tarifs.length > 0 ? (
+        <div class="mt-10 grid gap-6 md:grid-cols-3">
+          {tarifs.map((tarif) => (
+            <article class="rounded-[24px] border border-white/10 bg-[#222b3b] p-7">
+              <h3 class="font-mono text-2xl font-bold text-white">
+                {tarif.nom_tarif}
+              </h3>
+
+              <p class="mt-4 text-4xl font-bold text-[#facc15]">
+                {tarif.prix}€
+              </p>
+
+              <ul class="mt-5 space-y-2 text-sm leading-7 text-white/75">
+                {tarif.description
+                  ?.split("\n")
+                  .filter(Boolean)
+                  .map((line) => (
+                    <li>• {line}</li>
+                  ))}
+              </ul>
+
+              <div class="mt-6">
+                <a
+                  href="#"
+                  class="inline-flex items-center justify-center rounded-full bg-[#7c3aed] px-6 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
+                >
+                  Acheter
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div class="mt-8 rounded-[24px] border border-white/10 bg-[#222b3b] p-8 text-white/70">
+          Aucun tarif disponible pour le moment.
+        </div>
+      )
+    }
+  </section>
+
+  <section class="mx-auto max-w-7xl px-4 pb-16 md:px-6">
+    <h2 class="font-mono text-3xl font-bold text-white md:text-4xl">
+      Hébergements
+    </h2>
+
+    <div class="mt-10 grid gap-6 md:grid-cols-3">
+      {
+        hebergements.map((item) => (
+          <article class="rounded-[12px] border border-white/10 bg-[#222b3b] p-7">
+            <h3 class="font-mono text-2xl font-bold text-white">
+              {item.title}
+            </h3>
+
+            <p class="mt-5 text-sm leading-7 text-white/75">{item.text}</p>
+
+            <p class="mt-5 text-sm font-semibold text-[#facc15]">
+              {item.price}
+            </p>
+          </article>
+        ))
+      }
     </div>
   </section>
 
-  <section class="bg-[#f3f3f3] py-14 md:py-20">
-    <div class="mx-auto max-w-7xl px-4 md:px-6">
-      <h2 class="text-center font-mono text-3xl font-bold text-[#111827] md:text-5xl">
-        Tarifs & Billetterie
-      </h2>
+  <section class="mx-auto max-w-7xl px-4 pb-16 md:px-6 bg-white">
+    <h2 class="font-mono text-3xl font-bold text-black md:text-4xl">
+      Comment venir
+    </h2>
 
+    <div class="mt-10 grid gap-6 md:grid-cols-3">
       {
-        tarifs.length > 0 ? (
-          <div class="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {tarifs.map((tarif, index) => (
-              <article
-                class:list={[
-                  "rounded-[8px] bg-[#11182b] px-6 py-7 text-center shadow-[0_16px_40px_rgba(17,24,43,0.20)] md:px-8 md:py-10",
-                  index === 1 && "border-2 border-[#ffcc00]",
-                ]}
-              >
-                <h3 class="font-mono text-xl font-bold text-white md:text-2xl">
-                  {tarif.nom_tarif}
-                </h3>
+        transports.map((item) => (
+          <article class="rounded-[24px]  p-7 text-center">
+            <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-white text-3xl">
+              {item.symbol}
+            </div>
 
-                <p class="mt-5 font-mono text-4xl font-bold leading-none text-[#ffcc00] md:text-5xl">
-                  {tarif.prix}€
-                </p>
+            <h3 class="mt-5 font-mono text-2xl font-bold text-white">
+              {item.title}
+            </h3>
 
-                <ul class="mt-8 text-sm text-white md:text-base">
-                  {tarif.description
-                    ?.split("\n")
-                    .filter(Boolean)
-                    .map((line, itemIndex) => (
-                      <li
-                        class:list={[
-                          "py-3",
-                          itemIndex > 0 && "border-t border-white/35",
-                        ]}
-                      >
-                        {line}
-                      </li>
-                    ))}
-                </ul>
+            <p class="mt-4 text-sm leading-7 text-white/75">{item.text}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
 
-                <div class="mt-8">
-                  <a
-                    href="#"
-                    class="inline-flex min-w-36 items-center justify-center rounded-full bg-[#7c3aed] px-7 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 md:min-w-40"
-                  >
-                    Acheter
-                  </a>
-                </div>
-              </article>
-            ))}
-          </div>
+  <section class="mx-auto max-w-7xl px-4 pb-16 md:px-6 bg-white">
+    <h2 class="font-mono text-3xl font-bold text-black md:text-4xl">
+      Questions Fréquentes
+    </h2>
+
+    <div class="mt-10">
+      {
+        faqs.length > 0 ? (
+          <FaqAccordion items={faqs} />
         ) : (
-          <div class="mx-auto mt-10 max-w-4xl rounded-[8px] bg-[#11182b] p-8 text-center text-white/70">
-            Aucun tarif disponible pour le moment.
+          <div class="rounded-[24px] border border-white/10 bg-[#222b3b] p-8 text-white/70">
+            Aucune question fréquente disponible pour le moment.
           </div>
         )
       }
     </div>
   </section>
 
-  <section class="bg-[#171f31] py-14 md:py-20">
-    <div class="mx-auto max-w-7xl px-4 md:px-6">
-      <h2 class="text-center font-mono text-3xl font-bold text-white md:text-5xl">
-        Hébergements
+  <section class="mx-auto max-w-7xl px-4 pb-16 md:px-6">
+    <div
+      class="rounded-[28px] border border-white/10 bg-[#222b3b] px-6 py-12 text-center md:px-12"
+    >
+      <h2 class="font-mono text-4xl font-bold text-white md:text-5xl">
+        Prêt pour l’aventure ?
       </h2>
 
-      <div class="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {
-          hebergements.map((item) => (
-            <article class="rounded-[10px] bg-[#222a43] px-5 py-6 shadow-[0_12px_30px_rgba(0,0,0,0.18)]">
-              <h3 class="font-mono text-base font-bold text-white md:text-xl">
-                {item.title}
-              </h3>
-
-              <p class="mt-3 text-sm leading-6 text-white/75">{item.text}</p>
-
-              <p class="mt-4 text-sm font-semibold text-[#ffcc00]">
-                {item.price}
-              </p>
-            </article>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <section class="bg-white py-14 text-center md:py-20">
-    <div class="mx-auto max-w-7xl px-4 md:px-6">
-      <h2 class="font-mono text-3xl font-bold text-[#111827] md:text-5xl">
-        Comment venir
-      </h2>
-
-      <div class="mt-10 grid gap-10 md:grid-cols-3">
-        {
-          transports.map((item) => (
-            <article class="mx-auto max-w-sm">
-              <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-[#1991c7] text-white shadow-[0_8px_18px_rgba(25,145,199,0.28)]">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  class="h-5 w-5"
-                  aria-hidden="true"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M12 2a7 7 0 0 0-7 7c0 5.1 7 13 7 13s7-7.9 7-13a7 7 0 0 0-7-7Z"
-                  />
-                  <circle cx="12" cy="9" r="2.5" />
-                </svg>
-              </div>
-
-              <h3 class="mt-5 font-mono text-xl font-bold text-[#111827]">
-                {item.title}
-              </h3>
-
-              <p class="mt-4 text-sm leading-6 text-[#111827]/75">{item.text}</p>
-            </article>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <section class="bg-[#f3f3f3] py-14 md:py-20">
-    <div class="mx-auto max-w-5xl px-4 md:px-6">
-      <p class="text-center font-mono text-2xl font-bold text-[#7c3aed] md:text-4xl">
-        FAQ
+      <p
+        class="mx-auto mt-6 max-w-3xl text-base leading-8 text-white/80 md:text-xl"
+      >
+        Toutes les informations sont réunies, il ne vous reste plus qu’à
+        réserver vos billets
       </p>
-      <h2 class="mt-3 text-center font-mono text-2xl font-bold text-[#111827] md:text-4xl">
-        Questions Fréquentes
-      </h2>
 
-      <div class="mt-10">
-        {
-          faqs.length > 0 ? (
-            <FaqAccordion items={faqs} />
-          ) : (
-            <div class="rounded-[10px] bg-[#11182b] p-8 text-center text-white/70">
-              Aucune question fréquente disponible pour le moment.
-            </div>
-          )
-        }
+      <div class="mt-8">
+        <a
+          href="#"
+          class="inline-flex items-center justify-center rounded-full bg-white px-8 py-4 text-base font-semibold text-[#7c3aed] transition hover:opacity-90"
+        >
+          Acheter vos billets maintenant
+        </a>
       </div>
     </div>
   </section>

@@ -1,13 +1,234 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Hero from '../components/Hero.astro';
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const contactInfos = [
+  {
+    title: "Email",
+    value: "contact@lesrivesduterritoire.fr",
+    href: "mailto:contact@lesrivesduterritoire.fr",
+  },
+  {
+    title: "Téléphone",
+    value: "+33 (0)3 84 00 00 00",
+    href: "tel:+33384000000",
+  },
+  {
+    title: "Adresse",
+    value: "Berges de la Savoureuse, 90000 Belfort, France",
+    href: null,
+  },
+];
+
+const socials = [
+  {
+    name: "Facebook",
+    href: "https://www.facebook.com",
+  },
+  {
+    name: "Instagram",
+    href: "https://www.instagram.com",
+  },
+  {
+    name: "X",
+    href: "https://x.com",
+  },
+  {
+    name: "YouTube",
+    href: "https://www.youtube.com",
+  },
+];
 ---
 
-<BaseLayout title="Contact" description="Contacter le festival">
-  <Hero
-    title="Contact"
-    subtitle="Une question sur le festival, la billetterie ou l'acces ?"
-    ctaHref="mailto:contact@festival.test"
-    ctaLabel="Nous ecrire"
-  />
+<BaseLayout
+  title="Contact | Les Rives du Territoire"
+  description="Contactez l'équipe du festival Les Rives du Territoire."
+>
+  <section class="border-b border-white/10 bg-[#1b2230]">
+    <div class="mx-auto max-w-7xl px-4 py-16 md:px-6 md:py-20">
+      <h1 class="font-mono text-5xl font-bold text-white md:text-7xl">
+        Contact
+      </h1>
+
+      <p class="mt-5 max-w-3xl text-lg leading-8 text-white/80 md:text-2xl">
+        Une question, une demande d’information ou un besoin particulier ? Notre
+        équipe est là pour vous répondre.
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-4 py-16 md:px-6">
+    <div class="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+      <div
+        class="rounded-[28px] border border-white/10 bg-[#222b3b] p-6 md:p-8"
+      >
+        <h2 class="font-mono text-3xl font-bold text-white md:text-4xl">
+          Envoyez-nous un message
+        </h2>
+
+        <p class="mt-4 max-w-2xl text-sm leading-7 text-white/75 md:text-base">
+          Remplissez ce formulaire et nous reviendrons vers vous dès que
+          possible.
+        </p>
+
+        <form class="mt-8 space-y-5">
+          <div class="grid gap-5 md:grid-cols-2">
+            <div>
+              <label
+                for="nom"
+                class="mb-2 block text-sm font-semibold text-white/85"
+              >
+                Nom
+              </label>
+              <input
+                id="nom"
+                name="nom"
+                type="text"
+                placeholder="Votre nom"
+                class="w-full rounded-2xl border border-white/10 bg-[#1b2230] px-4 py-3 text-white placeholder:text-white/35 outline-none transition focus:border-[#facc15]"
+              />
+            </div>
+
+            <div>
+              <label
+                for="email"
+                class="mb-2 block text-sm font-semibold text-white/85"
+              >
+                Email
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="votre@email.com"
+                class="w-full rounded-2xl border border-white/10 bg-[#1b2230] px-4 py-3 text-white placeholder:text-white/35 outline-none transition focus:border-[#facc15]"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label
+              for="sujet"
+              class="mb-2 block text-sm font-semibold text-white/85"
+            >
+              Sujet
+            </label>
+            <input
+              id="sujet"
+              name="sujet"
+              type="text"
+              placeholder="Sujet de votre message"
+              class="w-full rounded-2xl border border-white/10 bg-[#1b2230] px-4 py-3 text-white placeholder:text-white/35 outline-none transition focus:border-[#facc15]"
+            />
+          </div>
+
+          <div>
+            <label
+              for="message"
+              class="mb-2 block text-sm font-semibold text-white/85"
+            >
+              Message
+            </label>
+            <textarea
+              id="message"
+              name="message"
+              rows="7"
+              placeholder="Écrivez votre message ici..."
+              class="w-full rounded-2xl border border-white/10 bg-[#1b2230] px-4 py-3 text-white placeholder:text-white/35 outline-none transition focus:border-[#facc15]"
+            ></textarea>
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              class="inline-flex items-center justify-center rounded-full bg-[#facc15] px-8 py-3.5 text-sm font-semibold text-black transition hover:opacity-90"
+            >
+              Envoyer le message
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="space-y-6">
+        <div
+          class="rounded-[28px] border border-white/10 bg-[#222b3b] p-6 md:p-8"
+        >
+          <h2 class="font-mono text-3xl font-bold text-white md:text-4xl">
+            Coordonnées
+          </h2>
+
+          <div class="mt-6 space-y-5">
+            {
+              contactInfos.map((item) => (
+                <div class="rounded-[20px] border border-white/8 bg-[#1b2230] p-5">
+                  <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[#facc15]">
+                    {item.title}
+                  </p>
+
+                  {item.href ? (
+                    <a
+                      href={item.href}
+                      class="mt-3 block text-base leading-7 text-white/85 transition hover:text-white"
+                    >
+                      {item.value}
+                    </a>
+                  ) : (
+                    <p class="mt-3 text-base leading-7 text-white/85">
+                      {item.value}
+                    </p>
+                  )}
+                </div>
+              ))
+            }
+          </div>
+        </div>
+
+        <div
+          class="rounded-[28px] border border-white/10 bg-[#222b3b] p-6 md:p-8"
+        >
+          <h2 class="font-mono text-3xl font-bold text-white md:text-4xl">
+            Réseaux sociaux
+          </h2>
+
+          <p class="mt-4 text-sm leading-7 text-white/75 md:text-base">
+            Suivez l’actualité du festival et ne manquez aucune annonce.
+          </p>
+
+          <div class="mt-6 flex flex-wrap gap-3">
+            {
+              socials.map((social) => (
+                <a
+                  href={social.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  class="inline-flex items-center justify-center rounded-full border border-white/12 bg-[#1b2230] px-5 py-3 text-sm font-semibold text-white/85 transition hover:border-[#facc15] hover:text-[#facc15]"
+                >
+                  {social.name}
+                </a>
+              ))
+            }
+          </div>
+        </div>
+
+        <div
+          class="rounded-[28px] border border-white/10 bg-[#182030] p-6 md:p-8"
+        >
+          <h2 class="font-mono text-2xl font-bold text-white md:text-3xl">
+            Une demande particulière ?
+          </h2>
+
+          <p class="mt-4 text-sm leading-7 text-white/75 md:text-base">
+            Pour les demandes presse, partenariats, accessibilité ou groupes,
+            contactez-nous directement par email.
+          </p>
+
+          <a
+            href="mailto:contact@lesrivesduterritoire.fr"
+            class="mt-6 inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-[#7c3aed] transition hover:opacity-90"
+          >
+            Nous écrire
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
