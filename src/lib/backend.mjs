@@ -43,6 +43,20 @@ export async function getAllArtistsSortedByDate() {
 }
 
 /**
+ * Retourne la liste de toutes les scenes triees par nom
+ */
+export async function getAllScenesSortedByName() {
+  return await getScenes();
+}
+
+/**
+ * Retourne la liste de tous les artistes tries par ordre alphabetique
+ */
+export async function getAllArtistsSortedByName() {
+  return await getArtists();
+}
+
+/**
  * Retourne les infos d'un artiste par son id
  */
 export async function getArtistById(id) {
@@ -57,7 +71,7 @@ export async function getSceneById(id) {
 }
 
 /**
- * Retourne toutes les programmations d'une scene donnee par son id, triees par date
+ * Retourne tous les artistes se produisant sur une scene donnee par son id, tries par date
  */
 export async function getArtistsBySceneId(sceneId) {
   const records = await pb.collection("programation").getFullList({
@@ -67,6 +81,17 @@ export async function getArtistsBySceneId(sceneId) {
   });
 
   return records.map(mapProgramItem);
+}
+
+/**
+ * Retourne tous les artistes se produisant sur une scene donnee par son nom, tries par date
+ */
+export async function getArtistsBySceneName(sceneName) {
+  const scene = await pb.collection("scenes").getFirstListItem(
+    `nom_scene = "${sceneName}"`,
+  );
+
+  return await getArtistsBySceneId(scene.id);
 }
 
 /**
@@ -182,4 +207,15 @@ export async function getDays() {
   });
 
   return [...new Set(records.map((item) => item.jour_label).filter(Boolean))];
+}
+
+/**
+ * Permet d'ajouter ou modifier les informations d'un artiste ou d'une scene
+ */
+export async function saveRecord(collectionName, data, id = null) {
+  if (id) {
+    return await pb.collection(collectionName).update(id, data);
+  }
+
+  return await pb.collection(collectionName).create(data);
 }

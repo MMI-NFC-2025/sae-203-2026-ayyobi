@@ -1,0 +1,60 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="404 | Les Rives du Territoire"
+  description="Page introuvable"
+>
+  <section
+    class="mx-auto flex min-h-[70vh] max-w-7xl items-center px-4 py-16 md:px-6"
+  >
+    <div class="grid w-full gap-10 lg:grid-cols-[1fr_0.9fr] lg:items-center">
+      <div>
+        <p
+          class="text-sm font-semibold uppercase tracking-[0.25em] text-[#facc15]"
+        >
+          Erreur 404
+        </p>
+
+        <h1 class="mt-4 font-mono text-5xl font-bold text-white md:text-7xl">
+          Page introuvable
+        </h1>
+
+        <p class="mt-6 max-w-2xl text-base leading-8 text-white/75 md:text-xl">
+          Oups… la page que vous cherchez n’existe pas ou a peut-être été
+          déplacée. Retournez à l’accueil pour continuer votre visite du
+          festival.
+        </p>
+
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a
+            href="/"
+            class="inline-flex items-center justify-center rounded-full bg-[#facc15] px-8 py-4 text-base font-semibold text-black transition hover:opacity-90"
+          >
+            Retour à l’accueil
+          </a>
+
+          <a
+            href="/programme"
+            class="inline-flex items-center justify-center rounded-full border border-white/12 px-8 py-4 text-base font-semibold text-white/85 transition hover:border-white/25 hover:bg-white/5"
+          >
+            Voir le programme
+          </a>
+        </div>
+      </div>
+
+      <div
+        class="rounded-[28px] border border-white/10 bg-[#222b3b] p-8 text-center md:p-12"
+      >
+        <div class="font-mono text-7xl font-bold text-[#facc15] md:text-8xl">
+          404
+        </div>
+
+        <p class="mt-6 text-sm leading-7 text-white/70 md:text-base">
+          Cette page n’a pas été trouvée.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

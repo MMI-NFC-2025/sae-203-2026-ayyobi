@@ -1,29 +1,41 @@
 import {
   getAllArtistsSortedByDate,
-  getScenes,
-  getArtists,
+  getAllScenesSortedByName,
+  getAllArtistsSortedByName,
   getArtistById,
   getSceneById,
   getArtistsBySceneId,
-  getProgramByDay,
-  getGenres,
-  getDays,
+  getArtistsBySceneName,
+  saveRecord,
 } from "./backend.mjs";
 
 async function test() {
+  const RUN_WRITE_TESTS = false;
+
+  const artistsByDate = await getAllArtistsSortedByDate();
+  const scenesByName = await getAllScenesSortedByName();
+  const artistsByName = await getAllArtistsSortedByName();
+
   console.log("=== Artistes tries par date ===");
-  console.log(await getAllArtistsSortedByDate());
+  console.log(artistsByDate);
 
   console.log("=== Scenes triees par nom ===");
-  console.log(await getScenes());
+  console.log(scenesByName);
 
   console.log("=== Artistes tries par nom ===");
-  console.log(await getArtists());
+  console.log(artistsByName);
 
-  // Remplace par de vrais ids de ta base
-  const artistId = "xum7ottta0n7x7n";
-  const sceneId = "dtppacxhw0c034h";
-  const jour = "Vendredi";
+  const firstArtist = artistsByName[0];
+  const firstScene = scenesByName[0];
+
+  if (!firstArtist || !firstScene) {
+    console.log("Base incomplete pour tester les fonctions de detail.");
+    return;
+  }
+
+  const artistId = firstArtist.id;
+  const sceneId = firstScene.id;
+  const sceneName = firstScene.nom_scene;
 
   console.log("=== Artiste par id ===");
   console.log(await getArtistById(artistId));
@@ -31,17 +43,24 @@ async function test() {
   console.log("=== Scene par id ===");
   console.log(await getSceneById(sceneId));
 
-  console.log("=== Programmation par scene id ===");
+  console.log("=== Artistes par scene id ===");
   console.log(await getArtistsBySceneId(sceneId));
 
-  console.log("=== Programmation par jour ===");
-  console.log(await getProgramByDay(jour));
+  console.log("=== Artistes par scene nom ===");
+  console.log(await getArtistsBySceneName(sceneName));
 
-  console.log("=== Genres disponibles ===");
-  console.log(await getGenres());
-
-  console.log("=== Jours disponibles ===");
-  console.log(await getDays());
+  if (RUN_WRITE_TESTS) {
+    console.log("=== Test saveRecord ===");
+    console.log(
+      await saveRecord(
+        "artistes",
+        {
+          nom_artiste: firstArtist.nom_artiste,
+        },
+        artistId,
+      ),
+    );
+  }
 }
 
 test();

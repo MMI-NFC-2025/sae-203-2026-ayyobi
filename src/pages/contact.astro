@@ -69,7 +69,7 @@ const socials = [
           possible.
         </p>
 
-        <form class="mt-8 space-y-5">
+        <form id="contactForm" class="mt-8 space-y-5">
           <div class="grid gap-5 md:grid-cols-2">
             <div>
               <label
@@ -135,6 +135,11 @@ const socials = [
               class="w-full rounded-2xl border border-white/10 bg-[#1b2230] px-4 py-3 text-white placeholder:text-white/35 outline-none transition focus:border-[#facc15]"
             ></textarea>
           </div>
+
+          <p
+            id="contactMessage"
+            class="hidden rounded-2xl border border-white/10 bg-[#1b2230] px-4 py-3 text-sm"
+          ></p>
 
           <div>
             <button
@@ -223,4 +228,20 @@ const socials = [
       </div>
     </div>
   </section>
+
+  <script>
+    const contactForm = document.getElementById("contactForm");
+    const contactMessage = document.getElementById("contactMessage");
+
+    contactForm?.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      contactMessage.textContent =
+        "Votre message a bien ete pris en compte. Nous vous recontacterons prochainement.";
+      contactMessage.classList.remove("hidden", "text-red-300", "border-red-400/20");
+      contactMessage.classList.add("text-green-300", "border-green-400/20");
+
+      contactForm.reset();
+    });
+  </script>
 </BaseLayout>

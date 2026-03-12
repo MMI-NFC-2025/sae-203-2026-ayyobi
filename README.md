@@ -2,3 +2,26 @@
 - Nom:Ayyobi 
 - Prénom:Nargis
 - url: https://lesrivesduterritoire.ayyobi.fr/
+
+## SAE 203
+
+### Acces front
+- URL principale : https://lesrivesduterritoire.ayyobi.fr/
+- URL Netlify : a completer
+- URL domaine/CNAME : https://lesrivesduterritoire.ayyobi.fr/
+
+### Acces backoffice PocketBase
+- URL backoffice : a completer
+
+### Contenu du dossier BACKEND
+- `backend.mjs`
+- `test_back.js`
+- `login.txt`
+- MCD : a ajouter en `.pdf` ou `.png`
+- dossier `pocketbase/pb_data` : a ajouter
+
+### Remarques
+- Le site est developpe avec Astro, Tailwind et PocketBase.
+- Les pages artistes et scenes utilisent des routes dynamiques.
+- Des filtres par genre, jour et scene sont disponibles.
+- Une page de connexion utilisateur est disponible.

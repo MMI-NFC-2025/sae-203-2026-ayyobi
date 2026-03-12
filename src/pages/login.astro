@@ -27,7 +27,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       </h2>
 
       <p class="mt-4 text-sm leading-7 text-white/75 md:text-base">
-        Entrez vos identifiants pour vous connecter.
+        Entrez vos identifiants pour vous connecter et acceder a l'espace de gestion.
       </p>
 
       <form id="loginForm" class="mt-8 space-y-5">
@@ -121,7 +121,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         await pb.collection("users").authWithPassword(email, password);
         showMessage("Connexion réussie.");
         setTimeout(() => {
-          window.location.href = "/";
+          window.location.href = "/gestion";
         }, 1000);
       } catch (error) {
         showMessage("Email ou mot de passe incorrect.", true);
