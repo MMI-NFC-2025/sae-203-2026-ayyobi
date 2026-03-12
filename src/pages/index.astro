@@ -67,7 +67,7 @@ const homeCards = [
   />
 
   <section class="mx-auto max-w-7xl px-4 py-16 md:px-6">
-    <div class="grid gap-8 md:grid-cols-2">
+    <div class="grid gap-6 sm:grid-cols-2 md:gap-8">
       {
         homeCards.map((card) => (
           <a
@@ -77,11 +77,11 @@ const homeCards = [
             <img
               src={card.image}
               alt={card.title}
-              class="h-72 w-full object-cover transition duration-500 group-hover:scale-105"
+              class="h-56 w-full object-cover transition duration-500 group-hover:scale-105 sm:h-64 lg:h-72"
             />
-            <div class="absolute inset-0 bg-gradient-to-t from-[#1b2230] via-[#1b2230]/55 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-[#1b2230] via-[#1b2230]/55 to-transparent" />
 
-            <div class="absolute inset-x-0 bottom-0 p-6">
+            <div class="absolute inset-x-0 bottom-0 p-5 sm:p-6">
               <h2 class="font-mono text-3xl font-bold text-white">
                 {card.title}
               </h2>
@@ -134,15 +134,18 @@ const homeCards = [
         Prêt à vibrer au rythme du territoire ?
       </h2>
 
-      <p class="mx-auto mt-6 max-w-3xl text-base leading-8 text-white/80 md:text-xl">
+      <p
+        class="mx-auto mt-6 max-w-3xl text-base leading-8 text-white/80 md:text-xl"
+      >
         Rejoignez-nous du 20 au 23 décembre 2026 aux Berges de la Savoureuse à
-        Belfort pour une expérience inoubliable de musique, art et culture urbaine.
+        Belfort pour une expérience inoubliable de musique, art et culture
+        urbaine.
       </p>
 
-      <div class="mt-8">
+      <div class="mt-8 flex justify-center">
         <a
           href="/infos-pratiques"
-          class="inline-flex items-center justify-center rounded-full bg-white px-8 py-4 text-base font-semibold text-[#7c3aed] transition hover:opacity-90"
+          class="inline-flex w-full items-center justify-center rounded-full bg-white px-8 py-4 text-base font-semibold text-[#7c3aed] transition hover:opacity-90 sm:w-auto"
         >
           Acheter vos billets maintenant
         </a>

@@ -42,7 +42,7 @@ const groupedProgram = Object.entries(
         par genre, horaire ou scène.
       </p>
 
-      <div class="mt-10 grid gap-4 md:grid-cols-3">
+      <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div>
           <label
             for="genreFilter"
@@ -94,11 +94,11 @@ const groupedProgram = Object.entries(
         </div>
       </div>
 
-      <div class="mt-6 flex flex-wrap gap-3">
+      <div class="mt-6 flex flex-wrap justify-center gap-3 md:justify-start">
         <button
           id="resetFilters"
           type="button"
-          class="inline-flex items-center justify-center rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium text-white/85 transition hover:border-white/30 hover:bg-white/5"
+          class="inline-flex w-full items-center justify-center rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium text-white/85 transition hover:border-white/30 hover:bg-white/5 sm:w-auto"
         >
           Réinitialiser les filtres
         </button>
@@ -107,7 +107,7 @@ const groupedProgram = Object.entries(
           href="/documents/programme-festival.pdf"
           target="_blank"
           rel="noreferrer"
-          class="inline-flex items-center justify-center rounded-full bg-[#facc15] px-5 py-2.5 text-sm font-semibold text-black transition hover:opacity-90"
+          class="inline-flex w-full items-center justify-center rounded-full bg-[#facc15] px-5 py-2.5 text-sm font-semibold text-black transition hover:opacity-90 sm:w-auto"
         >
           Télécharger le programme PDF
         </a>
@@ -115,7 +115,7 @@ const groupedProgram = Object.entries(
     </div>
   </section>
 
-  <section class="mx-auto max-w-7xl px-4 py-16 md:px-6 bg-white">
+  <section class="mx-auto max-w-7xl bg-white px-4 py-12 md:px-6 md:py-16">
     {
       groupedProgram.map(([day, items]) => (
         <div class="program-day mb-14 last:mb-0" data-day={day}>
@@ -143,8 +143,8 @@ const groupedProgram = Object.entries(
                   data-scene={scene?.nom_scene || ""}
                   data-hour={hourRange}
                 >
-                  <div class="grid gap-4 md:grid-cols-[110px_1fr] md:items-start">
-                    <div class="font-mono text-2xl font-bold text-[#facc15]">
+                  <div class="grid gap-4 sm:grid-cols-[120px_1fr] sm:items-start">
+                    <div class="font-mono text-2xl font-bold text-[#facc15] text-center sm:text-left">
                       {formatHour(item.date_representation)}
                     </div>
 

@@ -12,7 +12,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         Espace de gestion
       </h1>
 
-      <p class="mx-auto mt-5 max-w-3xl text-lg leading-8 text-white/80 md:text-2xl">
+      <p
+        class="mx-auto mt-5 max-w-3xl text-lg leading-8 text-white/80 md:text-2xl"
+      >
         Depuis cette page, vous pouvez ajouter ou modifier les artistes et les
         scenes du festival.
       </p>
@@ -23,7 +25,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <div class="rounded-[24px] border border-white/10 bg-[#222b3b] p-6 md:p-8">
       <div class="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-[#facc15]">
+          <p
+            class="text-sm font-semibold uppercase tracking-[0.2em] text-[#facc15]"
+          >
             Session
           </p>
           <p id="authStatus" class="mt-2 text-white/80">
@@ -34,7 +38,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <button
           id="logoutButton"
           type="button"
-          class="inline-flex items-center justify-center rounded-full border border-white/12 px-6 py-3 text-sm font-semibold text-white/85 transition hover:border-white/25 hover:bg-white/5"
+          class="inline-flex w-full items-center justify-center rounded-full border border-white/12 px-6 py-3 text-sm font-semibold text-white/85 transition hover:border-white/25 hover:bg-white/5 sm:w-auto"
         >
           Se deconnecter
         </button>
@@ -42,19 +46,24 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     </div>
 
     <div class="mt-10 grid gap-8 xl:grid-cols-2">
-      <article class="rounded-[24px] border border-white/10 bg-[#222b3b] p-6 md:p-8">
+      <article
+        class="rounded-[24px] border border-white/10 bg-[#222b3b] p-6 md:p-8"
+      >
         <h2 class="font-mono text-3xl font-bold text-white md:text-4xl">
           Gerer les artistes
         </h2>
 
         <p class="mt-4 text-sm leading-7 text-white/75">
-          Selectionnez un artiste existant pour le modifier ou laissez
-          l'option "Nouvel artiste" pour en creer un.
+          Selectionnez un artiste existant pour le modifier ou laissez l'option
+          "Nouvel artiste" pour en creer un.
         </p>
 
         <form id="artistForm" class="mt-8 space-y-5">
           <div>
-            <label for="artistSelect" class="mb-2 block text-sm font-semibold text-white/85">
+            <label
+              for="artistSelect"
+              class="mb-2 block text-sm font-semibold text-white/85"
+            >
               Artiste a modifier
             </label>
             <select
@@ -66,7 +75,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </div>
 
           <div>
-            <label for="artistName" class="mb-2 block text-sm font-semibold text-white/85">
+            <label
+              for="artistName"
+              class="mb-2 block text-sm font-semibold text-white/85"
+            >
               Nom de l'artiste
             </label>
             <input
@@ -79,7 +91,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </div>
 
           <div>
-            <label for="artistGenre" class="mb-2 block text-sm font-semibold text-white/85">
+            <label
+              for="artistGenre"
+              class="mb-2 block text-sm font-semibold text-white/85"
+            >
               Genre musical
             </label>
             <input
@@ -91,7 +106,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </div>
 
           <div>
-            <label for="artistDescription" class="mb-2 block text-sm font-semibold text-white/85">
+            <label
+              for="artistDescription"
+              class="mb-2 block text-sm font-semibold text-white/85"
+            >
               Description
             </label>
             <textarea
@@ -103,7 +121,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </div>
 
           <div>
-            <label for="artistPhoto" class="mb-2 block text-sm font-semibold text-white/85">
+            <label
+              for="artistPhoto"
+              class="mb-2 block text-sm font-semibold text-white/85"
+            >
               Photo principale
             </label>
             <input
@@ -118,12 +139,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           <p
             id="artistMessage"
             class="hidden rounded-2xl border border-white/10 bg-[#1b2230] px-4 py-3 text-sm"
-          ></p>
+          >
+          </p>
 
           <div class="flex flex-wrap gap-4">
             <button
               type="submit"
-              class="inline-flex items-center justify-center rounded-full bg-[#facc15] px-8 py-3.5 text-sm font-semibold text-black transition hover:opacity-90"
+              class="inline-flex w-full items-center justify-center rounded-full bg-[#facc15] px-8 py-3.5 text-sm font-semibold text-black transition hover:opacity-90 sm:w-auto"
             >
               Enregistrer l'artiste
             </button>
@@ -131,7 +153,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
             <button
               id="artistReset"
               type="button"
-              class="inline-flex items-center justify-center rounded-full border border-white/12 px-6 py-3 text-sm font-semibold text-white/85 transition hover:border-white/25 hover:bg-white/5"
+              class="inline-flex w-full items-center justify-center rounded-full border border-white/12 px-6 py-3 text-sm font-semibold text-white/85 transition hover:border-white/25 hover:bg-white/5 sm:w-auto"
             >
               Nouveau
             </button>
@@ -139,19 +161,24 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         </form>
       </article>
 
-      <article class="rounded-[24px] border border-white/10 bg-[#222b3b] p-6 md:p-8">
+      <article
+        class="rounded-[24px] border border-white/10 bg-[#222b3b] p-6 md:p-8"
+      >
         <h2 class="font-mono text-3xl font-bold text-white md:text-4xl">
           Gerer les scenes
         </h2>
 
         <p class="mt-4 text-sm leading-7 text-white/75">
-          Selectionnez une scene existante pour la modifier ou laissez
-          l'option "Nouvelle scene" pour en creer une.
+          Selectionnez une scene existante pour la modifier ou laissez l'option
+          "Nouvelle scene" pour en creer une.
         </p>
 
         <form id="sceneForm" class="mt-8 space-y-5">
           <div>
-            <label for="sceneSelect" class="mb-2 block text-sm font-semibold text-white/85">
+            <label
+              for="sceneSelect"
+              class="mb-2 block text-sm font-semibold text-white/85"
+            >
               Scene a modifier
             </label>
             <select
@@ -163,7 +190,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </div>
 
           <div>
-            <label for="sceneName" class="mb-2 block text-sm font-semibold text-white/85">
+            <label
+              for="sceneName"
+              class="mb-2 block text-sm font-semibold text-white/85"
+            >
               Nom de la scene
             </label>
             <input
@@ -176,7 +206,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </div>
 
           <div>
-            <label for="sceneLocation" class="mb-2 block text-sm font-semibold text-white/85">
+            <label
+              for="sceneLocation"
+              class="mb-2 block text-sm font-semibold text-white/85"
+            >
               Localisation
             </label>
             <input
@@ -188,7 +221,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </div>
 
           <div>
-            <label for="sceneCapacity" class="mb-2 block text-sm font-semibold text-white/85">
+            <label
+              for="sceneCapacity"
+              class="mb-2 block text-sm font-semibold text-white/85"
+            >
               Capacite
             </label>
             <input
@@ -201,7 +237,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </div>
 
           <div>
-            <label for="sceneDescription" class="mb-2 block text-sm font-semibold text-white/85">
+            <label
+              for="sceneDescription"
+              class="mb-2 block text-sm font-semibold text-white/85"
+            >
               Description
             </label>
             <textarea
@@ -213,7 +252,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </div>
 
           <div>
-            <label for="scenePhoto" class="mb-2 block text-sm font-semibold text-white/85">
+            <label
+              for="scenePhoto"
+              class="mb-2 block text-sm font-semibold text-white/85"
+            >
               Photo de la scene
             </label>
             <input
@@ -228,12 +270,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           <p
             id="sceneMessage"
             class="hidden rounded-2xl border border-white/10 bg-[#1b2230] px-4 py-3 text-sm"
-          ></p>
+          >
+          </p>
 
           <div class="flex flex-wrap gap-4">
             <button
               type="submit"
-              class="inline-flex items-center justify-center rounded-full bg-[#facc15] px-8 py-3.5 text-sm font-semibold text-black transition hover:opacity-90"
+              class="inline-flex w-full items-center justify-center rounded-full bg-[#facc15] px-8 py-3.5 text-sm font-semibold text-black transition hover:opacity-90 sm:w-auto"
             >
               Enregistrer la scene
             </button>
@@ -241,7 +284,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
             <button
               id="sceneReset"
               type="button"
-              class="inline-flex items-center justify-center rounded-full border border-white/12 px-6 py-3 text-sm font-semibold text-white/85 transition hover:border-white/25 hover:bg-white/5"
+              class="inline-flex w-full items-center justify-center rounded-full border border-white/12 px-6 py-3 text-sm font-semibold text-white/85 transition hover:border-white/25 hover:bg-white/5 sm:w-auto"
             >
               Nouvelle
             </button>
@@ -423,7 +466,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       const formData = new FormData();
       formData.set("nom_scene", sceneForm.nom_scene.value.trim());
       formData.set("localisation", sceneForm.localisation.value.trim());
-      formData.set("description_scene", sceneForm.description_scene.value.trim());
+      formData.set(
+        "description_scene",
+        sceneForm.description_scene.value.trim(),
+      );
 
       const capacity = sceneForm.capacite.value.trim();
       if (capacity) formData.set("capacite", capacity);

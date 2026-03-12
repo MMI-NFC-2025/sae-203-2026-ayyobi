@@ -1,5 +1,7 @@
 import PocketBase from "pocketbase";
 
-const url = import.meta.env.PUBLIC_POCKETBASE_URL || "http://127.0.0.1:8090";
+const url =
+  import.meta.env.PUBLIC_POCKETBASE_URL ||
+  "https://lesrivesduterritoire.ayyobi.fr";
 
 export const pb = new PocketBase(url);

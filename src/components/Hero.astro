@@ -25,14 +25,16 @@ const {
         {title}
       </h1>
 
-      <p class="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/85 md:text-2xl">
+      <p
+        class="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/85 md:text-2xl"
+      >
         {subtitle}
       </p>
 
       <div class="mt-8 flex flex-wrap justify-center gap-4">
         <a
           href={buttonHref}
-          class="inline-flex items-center justify-center rounded-full bg-[#facc15] px-8 py-4 text-base font-semibold text-black transition hover:opacity-90"
+          class="inline-flex w-full items-center justify-center rounded-full bg-[#facc15] px-8 py-4 text-base font-semibold text-black transition hover:opacity-90 sm:w-auto"
         >
           {buttonText}
         </a>
@@ -41,9 +43,9 @@ const {
 
     {
       dates.length > 0 && (
-        <div class="mt-12 grid gap-4 sm:grid-cols-2 xl:max-w-4xl">
+        <div class="mx-auto mt-12 grid gap-4 justify-items-center sm:grid-cols-2 lg:grid-cols-4 xl:max-w-6xl">
           {dates.map((item) => (
-            <article class="rounded-[22px] border border-white/15 bg-[#1b2230]/60 p-5 backdrop-blur-sm">
+            <article class="flex min-h-[120px] w-full max-w-[480px] flex-col justify-center rounded-[22px] border border-white/15 bg-[#1b2230]/60 p-5 text-center backdrop-blur-sm">
               <h2 class="font-mono text-xl font-bold text-[#facc15]">
                 {item.day}
               </h2>

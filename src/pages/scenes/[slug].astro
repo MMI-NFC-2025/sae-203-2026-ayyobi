@@ -5,23 +5,37 @@ import ArtistCard from "../../components/ArtistCard.astro";
 import {
   getScenes,
   getSceneById,
+  getSceneBySlug,
   getArtistsBySceneId,
 } from "../../lib/backend.mjs";
+import { slugify } from "../../lib/utils.mjs";
 
 export const prerender = true;
 
 export async function getStaticPaths() {
   const scenes = await getScenes();
 
-  return scenes.map((scene) => ({
-    params: { id: scene.id },
-  }));
+  return scenes.flatMap((scene) => [
+    { params: { slug: slugify(scene.nom_scene) } },
+    { params: { slug: scene.id } },
+  ]);
 }
 
-const { id } = Astro.params;
+const { slug } = Astro.params;
 
-const scene = await getSceneById(id);
-const artists = await getArtistsBySceneId(id);
+let scene = await getSceneBySlug(slug);
+
+if (!scene) {
+  const sceneById = await getSceneById(slug);
+
+  if (sceneById) {
+    return Astro.redirect(`/scenes/${slugify(sceneById.nom_scene)}`);
+  }
+
+  throw new Error("Scene introuvable");
+}
+
+const artists = await getArtistsBySceneId(scene.id);
 ---
 
 <BaseLayout
@@ -30,11 +44,6 @@ const artists = await getArtistsBySceneId(id);
 >
   <section class="border-b border-white/10 bg-[#1b2230]">
     <div class="mx-auto max-w-7xl px-4 py-16 text-center md:px-6 md:py-24">
-      <p
-        class="text-sm font-semibold uppercase tracking-[0.2em] text-[#facc15]"
-      >
-        Scène
-      </p>
 
       <h1 class="mt-4 font-mono text-5xl font-bold text-white md:text-7xl">
         {scene.nom_scene}
@@ -65,7 +74,7 @@ const artists = await getArtistsBySceneId(id);
 
       <div>
         <h2 class="font-mono text-3xl font-bold text-white md:text-4xl">
-          À propos de cette scène
+          A propos de cette scene
         </h2>
 
         <div
@@ -85,7 +94,7 @@ const artists = await getArtistsBySceneId(id);
           {
             scene.capacite && (
               <p>
-                <span class="font-semibold text-white">Capacité :</span>{" "}
+                <span class="font-semibold text-white">Capacite :</span>{" "}
                 {scene.capacite} personnes
               </p>
             )
@@ -99,12 +108,12 @@ const artists = await getArtistsBySceneId(id);
     <div class="mx-auto max-w-7xl px-4 py-16 md:px-6">
       <div class="max-w-3xl">
         <h2 class="font-mono text-4xl font-bold text-white md:text-5xl">
-          Artistes programmés
+          Artistes programmes
         </h2>
 
         <p class="mt-4 text-base leading-8 text-white/75 md:text-lg">
           Retrouvez tous les artistes qui se produisent sur {scene.nom_scene},
-          triés par date de représentation.
+          tries par date de representation.
         </p>
       </div>
 
@@ -118,7 +127,7 @@ const artists = await getArtistsBySceneId(id);
             </div>
           ) : (
             <div class="rounded-[24px] border border-white/10 bg-[#222b3b] p-8 text-center text-white/70">
-              Aucun artiste n’est programmé sur cette scène.
+              Aucun artiste n’est programme sur cette scene.
             </div>
           )
         }

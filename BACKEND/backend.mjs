@@ -78,6 +78,24 @@ export async function getSceneById(id) {
 }
 
 /**
+ * Retourne les infos d'une scene a partir de son slug
+ */
+export async function getSceneBySlug(slug) {
+  const scenes = await getScenes();
+  return scenes.find((scene) => {
+    return (
+      scene.nom_scene
+        ?.toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^\w\s-]/g, "")
+        .trim()
+        .replace(/\s+/g, "-") === slug
+    );
+  }) || null;
+}
+
+/**
  * Retourne tous les artistes se produisant sur une scene donnee par son id, tries par date
  */
 export async function getArtistsBySceneId(sceneId) {

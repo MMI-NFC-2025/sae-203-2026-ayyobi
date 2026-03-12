@@ -1,35 +1,40 @@
 ---
-import BaseLayout from "../../../../layouts/BaseLayout.astro";
-import ArtistCard from "../../../../components/ArtistCard.astro";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ArtistCard from "../../../components/ArtistCard.astro";
 import {
-  getScenes,
   getSceneById,
+  getSceneBySlug,
   getArtistsBySceneId,
-} from "../../../../lib/backend.mjs";
+} from "../../../lib/backend.mjs";
+import { slugify } from "../../../lib/utils.mjs";
 
-export async function getStaticPaths() {
-  const scenes = await getScenes();
+const { slug } = Astro.params;
 
-  return scenes.map((scene) => ({
-    params: { id: scene.id },
-  }));
+let scene = await getSceneBySlug(slug);
+
+if (!scene) {
+  const sceneById = await getSceneById(slug);
+
+  if (sceneById) {
+    return Astro.redirect(`/artistes/scene/${slugify(sceneById.nom_scene)}`);
+  }
+
+  throw new Error("Scene introuvable");
 }
 
-const { id } = Astro.params;
-const scene = await getSceneById(id);
-const artists = await getArtistsBySceneId(id);
+const artists = await getArtistsBySceneId(scene.id);
 ---
 
 <BaseLayout
   title={`${scene.nom_scene} | Les Rives du Territoire`}
-  description={`Découvrez les artistes programmés sur ${scene.nom_scene}.`}
+  description={`Decouvrez les artistes programmes sur ${scene.nom_scene}.`}
 >
   <section class="border-b border-white/10 bg-[#1b2230]">
     <div class="mx-auto max-w-7xl px-4 py-16 text-center md:px-6 md:py-24">
       <p
         class="text-sm font-semibold uppercase tracking-[0.2em] text-[#facc15]"
       >
-        Filtre par scène
+        Filtre par scene
       </p>
 
       <h1 class="mt-4 font-mono text-5xl font-bold text-white md:text-7xl">
@@ -56,7 +61,7 @@ const artists = await getArtistsBySceneId(id);
         </div>
       ) : (
         <div class="rounded-[24px] border border-white/10 bg-[#222b3b] p-8 text-center text-white/70">
-          Aucun artiste trouvé pour cette scène.
+          Aucun artiste trouve pour cette scene.
         </div>
       )
     }

@@ -9,8 +9,8 @@
 - URL principale : https://lesrivesduterritoire.ayyobi.fr/
 - URL Netlify : a completer
 - URL domaine/CNAME : https://lesrivesduterritoire.ayyobi.fr/
+- Variable Netlify a definir : `PUBLIC_POCKETBASE_URL=https://lesrivesduterritoire.ayyobi.fr`
 
 ### Acces backoffice PocketBase
 - URL backoffice : a completer
-
 
