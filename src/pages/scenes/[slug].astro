@@ -43,7 +43,15 @@ const artists = await getArtistsBySceneId(scene.id);
   description={scene.description_scene}
 >
   <section class="border-b border-white/10 bg-[#1b2230]">
-    <div class="mx-auto max-w-7xl px-4 py-16 text-center md:px-6 md:py-24">
+    <div class="mx-auto max-w-4xl px-4 py-16 text-center md:px-6 md:py-24">
+      <div class="mb-8 flex justify-start">
+        <a
+          href="/scenes"
+          class="inline-flex items-center rounded-full border border-white/15 bg-[#222b3b] px-4 py-2 text-sm font-semibold text-white/85 transition hover:border-[#facc15] hover:text-[#facc15]"
+        >
+          &larr; Retour aux scenes
+        </a>
+      </div>
 
       <h1 class="mt-4 font-mono text-5xl font-bold text-white md:text-7xl">
         {scene.nom_scene}
@@ -52,7 +60,7 @@ const artists = await getArtistsBySceneId(scene.id);
       {
         scene.description_scene && (
           <div
-            class="mt-6 max-w-3xl text-center text-lg leading-8 text-white/80 md:text-2xl [&_p]:mb-4 [&_p]:last:mb-0"
+            class="mx-auto mt-6 max-w-3xl text-center text-lg leading-8 text-white/80 md:text-2xl [&_p]:mb-4 [&_p]:last:mb-0"
             set:html={scene.description_scene}
           />
         )
@@ -83,7 +91,10 @@ const artists = await getArtistsBySceneId(scene.id);
         >
           {
             scene.description_scene && (
-              <div set:html={scene.description_scene} class="[&_p]:mb-4 [&_p]:last:mb-0" />
+              <div
+                set:html={scene.description_scene}
+                class="[&_p]:mb-4 [&_p]:last:mb-0"
+              />
             )
           }
 
@@ -111,12 +122,14 @@ const artists = await getArtistsBySceneId(scene.id);
 
   <section class="bg-[#182030]">
     <div class="mx-auto max-w-7xl px-4 py-16 md:px-6">
-      <div class="max-w-3xl text-center">
+      <div class="mx-auto max-w-3xl text-center">
         <h2 class="font-mono text-4xl font-bold text-white md:text-5xl">
           Artistes programmes
         </h2>
 
-        <p class="mx-auto mt-4 text-center text-base leading-8 text-white/75 md:text-lg">
+        <p
+          class="mx-auto mt-4 text-center text-base leading-8 text-white/75 md:text-lg"
+        >
           Retrouvez tous les artistes qui se produisent sur {scene.nom_scene},
           tries par date de representation.
         </p>

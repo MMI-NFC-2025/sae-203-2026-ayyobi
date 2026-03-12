@@ -20,7 +20,16 @@ const artists = await getProgramByDay(jour);
   description={`Découvrez les artistes programmés le ${jour}.`}
 >
   <section class="border-b border-white/10 bg-[#1b2230]">
-    <div class="mx-auto max-w-7xl px-4 py-16 text-center md:px-6 md:py-24">
+    <div class="mx-auto max-w-4xl px-4 py-16 text-center md:px-6 md:py-24">
+      <div class="mb-8 flex justify-start">
+        <a
+          href="/artistes"
+          class="inline-flex items-center rounded-full border border-white/15 bg-[#222b3b] px-4 py-2 text-sm font-semibold text-white/85 transition hover:border-[#facc15] hover:text-[#facc15]"
+        >
+          &larr; Retour aux artistes
+        </a>
+      </div>
+
       <p
         class="text-sm font-semibold uppercase tracking-[0.2em] text-[#facc15]"
       >

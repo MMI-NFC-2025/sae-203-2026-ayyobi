@@ -32,85 +32,91 @@ const groupedProgram = Object.entries(
   description="Découvrez le programme complet du festival Les Rives du Territoire."
 >
   <section class="border-b border-white/10 bg-[#1b2230]">
-    <div class="mx-auto max-w-7xl px-4 py-16 text-center md:px-6 md:py-24">
-      <h1 class="font-mono text-5xl font-bold text-white md:text-7xl">
-        Programme
-      </h1>
+    <div class="mx-auto max-w-4xl px-4 py-16 text-center md:px-6 md:py-24">
+      <div class="mx-auto max-w-3xl">
+        <h1 class="font-mono text-5xl font-bold text-white md:text-7xl">
+          Programme
+        </h1>
 
-      <p class="mx-auto mt-6 max-w-3xl text-center text-lg leading-8 text-white/80 md:text-2xl">
-        Découvrez la programmation complète du festival et filtrez les concerts
-        par genre, horaire ou scène.
-      </p>
-
-      <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <div>
-          <label
-            for="genreFilter"
-            class="mb-2 block text-sm font-semibold text-white/80"
-          >
-            Genre
-          </label>
-          <select
-            id="genreFilter"
-            class="w-full rounded-2xl border border-white/10 bg-[#222b3b] px-4 py-3 text-white outline-none transition focus:border-[#facc15]"
-          >
-            <option value="">Tous les genres</option>
-            {genres.map((genre) => <option value={genre}>{genre}</option>)}
-          </select>
-        </div>
-
-        <div>
-          <label
-            for="hourFilter"
-            class="mb-2 block text-sm font-semibold text-white/80"
-          >
-            Horaire
-          </label>
-          <select
-            id="hourFilter"
-            class="w-full rounded-2xl border border-white/10 bg-[#222b3b] px-4 py-3 text-white outline-none transition focus:border-[#facc15]"
-          >
-            <option value="">Tous les horaires</option>
-            <option value="afternoon">Avant 18h</option>
-            <option value="evening">18h à 21h</option>
-            <option value="night">Après 21h</option>
-          </select>
-        </div>
-
-        <div>
-          <label
-            for="sceneFilter"
-            class="mb-2 block text-sm font-semibold text-white/80"
-          >
-            Scène
-          </label>
-          <select
-            id="sceneFilter"
-            class="w-full rounded-2xl border border-white/10 bg-[#222b3b] px-4 py-3 text-white outline-none transition focus:border-[#facc15]"
-          >
-            <option value="">Toutes les scènes</option>
-            {scenes.map((scene) => <option value={scene}>{scene}</option>)}
-          </select>
-        </div>
+        <p
+          class="mx-auto mt-6 max-w-3xl text-center text-lg leading-8 text-white/80 md:text-2xl"
+        >
+          Découvrez la programmation complète du festival et filtrez les
+          concerts par genre, horaire ou scène.
+        </p>
       </div>
 
-      <div class="mt-6 flex flex-wrap justify-center gap-3 md:justify-start">
-        <button
-          id="resetFilters"
-          type="button"
-          class="inline-flex w-full items-center justify-center rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium text-white/85 transition hover:border-white/30 hover:bg-white/5 sm:w-auto"
-        >
-          Réinitialiser les filtres
-        </button>
+      <div class="mx-auto mt-10 max-w-4xl">
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div>
+            <label
+              for="genreFilter"
+              class="mb-2 block text-sm font-semibold text-white/80"
+            >
+              Genre
+            </label>
+            <select
+              id="genreFilter"
+              class="w-full rounded-2xl border border-white/10 bg-[#222b3b] px-4 py-3 text-white outline-none transition focus:border-[#facc15]"
+            >
+              <option value="">Tous les genres</option>
+              {genres.map((genre) => <option value={genre}>{genre}</option>)}
+            </select>
+          </div>
 
-        <a
-          href="/documents/programme-festival.pdf"
-          target="_blank"
-          rel="noreferrer"
-          class="inline-flex w-full items-center justify-center rounded-full bg-[#facc15] px-5 py-2.5 text-sm font-semibold text-black transition hover:opacity-90 sm:w-auto"
-        >
-          Télécharger le programme PDF
-        </a>
+          <div>
+            <label
+              for="hourFilter"
+              class="mb-2 block text-sm font-semibold text-white/80"
+            >
+              Horaire
+            </label>
+            <select
+              id="hourFilter"
+              class="w-full rounded-2xl border border-white/10 bg-[#222b3b] px-4 py-3 text-white outline-none transition focus:border-[#facc15]"
+            >
+              <option value="">Tous les horaires</option>
+              <option value="afternoon">Avant 18h</option>
+              <option value="evening">18h à 21h</option>
+              <option value="night">Après 21h</option>
+            </select>
+          </div>
+
+          <div>
+            <label
+              for="sceneFilter"
+              class="mb-2 block text-sm font-semibold text-white/80"
+            >
+              Scène
+            </label>
+            <select
+              id="sceneFilter"
+              class="w-full rounded-2xl border border-white/10 bg-[#222b3b] px-4 py-3 text-white outline-none transition focus:border-[#facc15]"
+            >
+              <option value="">Toutes les scènes</option>
+              {scenes.map((scene) => <option value={scene}>{scene}</option>)}
+            </select>
+          </div>
+        </div>
+
+        <div class="mt-6 flex flex-wrap justify-center gap-3">
+          <button
+            id="resetFilters"
+            type="button"
+            class="inline-flex w-full items-center justify-center rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium text-white/85 transition hover:border-white/30 hover:bg-white/5 sm:w-auto"
+          >
+            Réinitialiser les filtres
+          </button>
+
+          <a
+            href="/documents/programme-festival.pdf"
+            target="_blank"
+            rel="noreferrer"
+            class="inline-flex w-full items-center justify-center rounded-full bg-[#facc15] px-5 py-2.5 text-sm font-semibold text-black transition hover:opacity-90 sm:w-auto"
+          >
+            Télécharger le programme PDF
+          </a>
+        </div>
       </div>
     </div>
   </section>
