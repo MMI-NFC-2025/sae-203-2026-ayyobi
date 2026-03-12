@@ -6,12 +6,9 @@ import {
   getSceneById,
   getArtistsBySceneId,
   getArtistsBySceneName,
-  saveRecord,
 } from "./backend.mjs";
 
 async function test() {
-  const RUN_WRITE_TESTS = false;
-
   const artistsByDate = await getAllArtistsSortedByDate();
   const scenesByName = await getAllScenesSortedByName();
   const artistsByName = await getAllArtistsSortedByName();
@@ -48,19 +45,6 @@ async function test() {
 
   console.log("=== Artistes par scene nom ===");
   console.log(await getArtistsBySceneName(sceneName));
-
-  if (RUN_WRITE_TESTS) {
-    console.log("=== Test saveRecord ===");
-    console.log(
-      await saveRecord(
-        "artistes",
-        {
-          nom_artiste: firstArtist.nom_artiste,
-        },
-        artistId,
-      ),
-    );
-  }
 }
 
 test();
