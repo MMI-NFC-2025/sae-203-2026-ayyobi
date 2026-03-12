@@ -1,4 +1,11 @@
-import { pb } from "../src/lib/pocketbase.js";
+// Importation de la bibliothèque PocketBase
+import PocketBase from "pocketbase";
+
+// Définition de l'URL de l'instance PocketBase
+const POCKETBASE_URL = "https://lesrivesduterritoire.ayyobi.fr";
+
+export const pb = new PocketBase(POCKETBASE_URL);
+
 
 function mapProgramItem(item) {
   return {
@@ -207,34 +214,6 @@ export async function getDays() {
   });
 
   return [...new Set(records.map((item) => item.jour_label).filter(Boolean))];
-}
-
-/**
- * Connecte un utilisateur PocketBase avec email et mot de passe
- */
-export async function loginUser(email, password) {
-  return await pb.collection("users").authWithPassword(email, password);
-}
-
-/**
- * Retourne l'utilisateur actuellement connecte
- */
-export function getCurrentUser() {
-  return pb.authStore.model;
-}
-
-/**
- * Indique si un utilisateur est connecte
- */
-export function isAuthenticated() {
-  return pb.authStore.isValid;
-}
-
-/**
- * Deconnecte l'utilisateur courant
- */
-export function logoutUser() {
-  pb.authStore.clear();
 }
 
 /**
