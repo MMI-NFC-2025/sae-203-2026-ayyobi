@@ -5,18 +5,18 @@ const { items = [] } = Astro.props;
 <div class="space-y-4">
   {
     items.map((item, index) => (
-      <details class="group rounded-[20px] border border-white/10 bg-[#222b3b] p-5">
+      <details class="group rounded-[10px] bg-[#1a2135] px-5 py-4 shadow-[0_12px_30px_rgba(0,0,0,0.18)]">
         <summary class="flex cursor-pointer list-none items-center justify-between gap-4">
-          <span class="text-base font-semibold text-white">
+          <span class="text-sm font-semibold leading-6 text-white md:text-base">
             {item.question}
           </span>
 
-          <span class="text-xl font-bold text-[#facc15] transition group-open:rotate-45">
+          <span class="text-xl font-bold text-[#ffcc00] transition group-open:rotate-45">
             +
           </span>
         </summary>
 
-        <div class="pt-4 text-sm leading-7 text-white/75">{item.reponse}</div>
+        <div class="pt-4 text-sm leading-6 text-white/75">{item.reponse}</div>
       </details>
     ))
   }
