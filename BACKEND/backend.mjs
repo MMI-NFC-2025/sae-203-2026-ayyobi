@@ -1,10 +1,6 @@
-// Importation de la bibliotheque PocketBase
 import PocketBase from "pocketbase";
 
-// Definition de l'URL de l'instance PocketBase
-const POCKETBASE_URL = "https://lesrivesduterritoire.ayyobi.fr";
-
-export const pb = new PocketBase(POCKETBASE_URL);
+const pb = new PocketBase("https://lesrivesduterritoire.ayyobi.fr");
 
 const COLLECTIONS = {
   artists: ["artistes", "artists"],
@@ -16,32 +12,23 @@ const COLLECTIONS = {
   team: ["equipe", "team"],
 };
 
-const resolvedCollections = new Map();
-
-function isNotFoundError(error) {
+function isNotFound(error) {
   return error?.status === 404;
 }
 
-function getCollectionCandidates(key) {
+function getCollectionNames(key) {
   return COLLECTIONS[key] || [key];
 }
 
-async function withCollection(key, handler) {
-  const cached = resolvedCollections.get(key);
-  const candidates = cached
-    ? [cached, ...getCollectionCandidates(key).filter((name) => name !== cached)]
-    : getCollectionCandidates(key);
+async function tryCollections(key, callback) {
+  let lastNotFound = null;
 
-  let lastNotFoundError = null;
-
-  for (const collectionName of candidates) {
+  for (const name of getCollectionNames(key)) {
     try {
-      const result = await handler(collectionName);
-      resolvedCollections.set(key, collectionName);
-      return result;
+      return await callback(name);
     } catch (error) {
-      if (isNotFoundError(error)) {
-        lastNotFoundError = error;
+      if (isNotFound(error)) {
+        lastNotFound = error;
         continue;
       }
 
@@ -49,58 +36,53 @@ async function withCollection(key, handler) {
     }
   }
 
-  throw lastNotFoundError;
+  if (lastNotFound) {
+    throw lastNotFound;
+  }
+
+  return null;
 }
 
 async function getFullListOrEmpty(key, options = {}) {
   try {
-    return await withCollection(key, (collectionName) =>
-      pb.collection(collectionName).getFullList(options),
+    return await tryCollections(key, (name) =>
+      pb.collection(name).getFullList(options),
     );
   } catch (error) {
-    if (isNotFoundError(error)) {
-      return [];
-    }
-
+    if (isNotFound(error)) return [];
     throw error;
   }
 }
 
 async function getOneOrNull(key, id) {
   try {
-    return await withCollection(key, (collectionName) =>
-      pb.collection(collectionName).getOne(id),
+    return await tryCollections(key, (name) =>
+      pb.collection(name).getOne(id),
     );
   } catch (error) {
-    if (isNotFoundError(error)) {
-      return null;
-    }
-
+    if (isNotFound(error)) return null;
     throw error;
   }
 }
 
 async function getFirstListItemOrNull(key, filter, options = {}) {
   try {
-    return await withCollection(key, (collectionName) =>
-      pb.collection(collectionName).getFirstListItem(filter, options),
+    return await tryCollections(key, (name) =>
+      pb.collection(name).getFirstListItem(filter, options),
     );
   } catch (error) {
-    if (isNotFoundError(error)) {
-      return null;
-    }
-
+    if (isNotFound(error)) return null;
     throw error;
   }
 }
 
 async function createOrUpdateRecord(key, data, id = null) {
-  return withCollection(key, async (collectionName) => {
+  return tryCollections(key, (name) => {
     if (id) {
-      return pb.collection(collectionName).update(id, data);
+      return pb.collection(name).update(id, data);
     }
 
-    return pb.collection(collectionName).create(data);
+    return pb.collection(name).create(data);
   });
 }
 
