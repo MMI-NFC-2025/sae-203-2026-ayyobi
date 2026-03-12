@@ -25,9 +25,10 @@ const { scene } = Astro.props;
 
     {
       scene.description_scene && (
-        <p class="line-clamp-3 text-xs leading-6 text-white/70 sm:text-sm">
-          {scene.description_scene}
-        </p>
+        <div
+          class="line-clamp-3 text-xs leading-6 text-white/70 sm:text-sm"
+          set:html={scene.description_scene}
+        />
       )
     }
 

@@ -1,5 +1,113 @@
 import { pb } from "./pocketbase.js";
 
+const COLLECTIONS = {
+  artists: ["artistes", "artists"],
+  scenes: ["scenes", "scene"],
+  program: ["programation", "programmation"],
+  partners: ["partenaires", "partners"],
+  tarifs: ["tarifs", "tarif"],
+  faq: ["faq", "faqs"],
+  team: ["equipe", "team"],
+};
+
+const resolvedCollections = new Map();
+
+function isNotFoundError(error) {
+  return error?.status === 404;
+}
+
+function getCollectionCandidates(key) {
+  return COLLECTIONS[key] || [key];
+}
+
+async function withCollection(key, handler) {
+  const cached = resolvedCollections.get(key);
+  const candidates = cached
+    ? [cached, ...getCollectionCandidates(key).filter((name) => name !== cached)]
+    : getCollectionCandidates(key);
+
+  let lastNotFoundError = null;
+
+  for (const collectionName of candidates) {
+    try {
+      const result = await handler(collectionName);
+      resolvedCollections.set(key, collectionName);
+      return result;
+    } catch (error) {
+      if (isNotFoundError(error)) {
+        lastNotFoundError = error;
+        continue;
+      }
+
+      throw error;
+    }
+  }
+
+  throw lastNotFoundError;
+}
+
+async function getFullListOrEmpty(key, options = {}) {
+  try {
+    return await withCollection(key, (collectionName) =>
+      pb.collection(collectionName).getFullList(options),
+    );
+  } catch (error) {
+    if (isNotFoundError(error)) {
+      return [];
+    }
+
+    throw error;
+  }
+}
+
+async function getOneOrNull(key, id) {
+  try {
+    return await withCollection(key, (collectionName) =>
+      pb.collection(collectionName).getOne(id),
+    );
+  } catch (error) {
+    if (isNotFoundError(error)) {
+      return null;
+    }
+
+    throw error;
+  }
+}
+
+async function getFirstListItemOrNull(key, filter, options = {}) {
+  try {
+    return await withCollection(key, (collectionName) =>
+      pb.collection(collectionName).getFirstListItem(filter, options),
+    );
+  } catch (error) {
+    if (isNotFoundError(error)) {
+      return null;
+    }
+
+    throw error;
+  }
+}
+
+async function createOrUpdateRecord(key, data, id = null) {
+  return withCollection(key, async (collectionName) => {
+    if (id) {
+      return pb.collection(collectionName).update(id, data);
+    }
+
+    return pb.collection(collectionName).create(data);
+  });
+}
+
+function normalizeSlug(value) {
+  return value
+    ?.toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\w\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+}
+
 function mapProgramItem(item) {
   return {
     programmationId: item.id,
@@ -11,30 +119,32 @@ function mapProgramItem(item) {
   };
 }
 
-/**
- * Genere l'URL d'un fichier PocketBase
- */
 export function getFileUrl(record, field) {
   if (!record || !field || !record[field]) return null;
-  return pb.files.getURL(record, record[field]);
+
+  try {
+    return pb.getFileUrl(record, record[field]);
+  } catch (error) {
+    if (error?.message?.includes("Missing collection context")) {
+      return null;
+    }
+
+    throw error;
+  }
 }
 
-/**
- * Genere toutes les URLs d'un champ file multiple
- */
 export function getGalleryUrls(record, field) {
   if (!record || !field || !record[field] || !Array.isArray(record[field])) {
     return [];
   }
 
-  return record[field].map((file) => pb.files.getURL(record, file));
+  return record[field]
+    .map((file) => getFileUrl({ ...record, [field]: file }, field))
+    .filter(Boolean);
 }
 
-/**
- * Retourne la liste de tous les artistes tries par date de representation
- */
 export async function getAllArtistsSortedByDate() {
-  const records = await pb.collection("programation").getFullList({
+  const records = await getFullListOrEmpty("program", {
     sort: "+date_representation",
     expand: "artiste,scene",
   });
@@ -42,57 +152,34 @@ export async function getAllArtistsSortedByDate() {
   return records.map(mapProgramItem);
 }
 
-/**
- * Retourne la liste de toutes les scenes triees par nom
- */
 export async function getAllScenesSortedByName() {
-  return await getScenes();
+  return getScenes();
 }
 
-/**
- * Retourne la liste de tous les artistes tries par ordre alphabetique
- */
 export async function getAllArtistsSortedByName() {
-  return await getArtists();
+  return getArtists();
 }
 
-/**
- * Retourne les infos d'un artiste par son id
- */
 export async function getArtistById(id) {
-  return await pb.collection("artistes").getOne(id);
+  return getOneOrNull("artists", id);
 }
 
-/**
- * Retourne les infos d'une scene par son id
- */
+export async function getArtistBySlug(slug) {
+  const artists = await getArtists();
+  return artists.find((artist) => normalizeSlug(artist.nom_artiste) === slug) || null;
+}
+
 export async function getSceneById(id) {
-  return await pb.collection("scenes").getOne(id);
+  return getOneOrNull("scenes", id);
 }
 
-/**
- * Retourne les infos d'une scene a partir de son slug
- */
 export async function getSceneBySlug(slug) {
   const scenes = await getScenes();
-  return scenes.find((scene) => {
-    return (
-      scene.nom_scene
-        ?.toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/[^\w\s-]/g, "")
-        .trim()
-        .replace(/\s+/g, "-") === slug
-    );
-  }) || null;
+  return scenes.find((scene) => normalizeSlug(scene.nom_scene) === slug) || null;
 }
 
-/**
- * Retourne tous les artistes se produisant sur une scene donnee par son id, tries par date
- */
 export async function getArtistsBySceneId(sceneId) {
-  const records = await pb.collection("programation").getFullList({
+  const records = await getFullListOrEmpty("program", {
     filter: `scene = "${sceneId}"`,
     sort: "+date_representation",
     expand: "artiste,scene",
@@ -101,139 +188,95 @@ export async function getArtistsBySceneId(sceneId) {
   return records.map(mapProgramItem);
 }
 
-/**
- * Retourne tous les artistes se produisant sur une scene donnee par son nom, tries par date
- */
 export async function getArtistsBySceneName(sceneName) {
-  const scene = await pb.collection("scenes").getFirstListItem(
-    `nom_scene = "${sceneName}"`,
-  );
+  const scene = await getFirstListItemOrNull("scenes", `nom_scene = "${sceneName}"`);
 
-  return await getArtistsBySceneId(scene.id);
+  if (!scene) {
+    return [];
+  }
+
+  return getArtistsBySceneId(scene.id);
 }
 
-/**
- * Retourne toutes les programmations d'un artiste par son id
- */
 export async function getProgramByArtistId(artistId) {
-  return await pb.collection("programation").getFullList({
+  return getFullListOrEmpty("program", {
     filter: `artiste = "${artistId}"`,
     sort: "+date_representation",
     expand: "artiste,scene",
   });
 }
 
-/**
- * Programme complet trie par date
- */
 export async function getFullProgram() {
-  return await pb.collection("programation").getFullList({
+  return getFullListOrEmpty("program", {
     sort: "+date_representation",
     expand: "artiste,scene",
   });
 }
 
-/**
- * Programmation filtree par jour
- */
 export async function getProgramByDay(jour) {
-  return await pb.collection("programation").getFullList({
+  return getFullListOrEmpty("program", {
     filter: `jour_label = "${jour}"`,
     sort: "+date_representation",
     expand: "artiste,scene",
   });
 }
 
-/**
- * Liste des partenaires
- */
 export async function getPartners() {
-  return await pb.collection("partenaires").getFullList({
+  return getFullListOrEmpty("partners", {
     sort: "+ordre_affichage",
   });
 }
 
-/**
- * Liste des tarifs
- */
 export async function getTarifs() {
-  return await pb.collection("tarifs").getFullList({
+  return getFullListOrEmpty("tarifs", {
     sort: "+ordre_affichage",
   });
 }
 
-/**
- * Liste des questions FAQ
- */
 export async function getFaqs() {
-  return await pb.collection("faq").getFullList({
+  return getFullListOrEmpty("faq", {
     sort: "+ordre_affichage",
   });
 }
 
-/**
- * Liste des artistes
- */
 export async function getArtists() {
-  return await pb.collection("artistes").getFullList({
+  return getFullListOrEmpty("artists", {
     sort: "+nom_artiste",
   });
 }
 
-/**
- * Liste des scenes
- */
 export async function getScenes() {
-  return await pb.collection("scenes").getFullList({
+  return getFullListOrEmpty("scenes", {
     sort: "+nom_scene",
   });
 }
 
-/**
- * Liste de l'equipe
- */
 export async function getTeam() {
-  return await pb.collection("equipe").getFullList({
+  return getFullListOrEmpty("team", {
     sort: "+ordre_affichage",
   });
 }
 
-/**
- * Artistes filtres par genre musical
- */
 export async function getArtistsByGenre(genre) {
-  return await pb.collection("artistes").getFullList({
+  return getFullListOrEmpty("artists", {
     filter: `genre_musical = "${genre}"`,
     sort: "+nom_artiste",
   });
 }
 
-/**
- * Liste des genres uniques
- */
 export async function getGenres() {
   const artists = await getArtists();
   return [...new Set(artists.map((artist) => artist.genre_musical).filter(Boolean))];
 }
 
-/**
- * Liste des jours uniques depuis la programmation
- */
 export async function getDays() {
-  const records = await pb.collection("programation").getFullList({
+  const records = await getFullListOrEmpty("program", {
     sort: "+date_representation",
   });
 
   return [...new Set(records.map((item) => item.jour_label).filter(Boolean))];
 }
 
-/**
- * Permet d'ajouter ou modifier les informations d'un artiste ou d'une scene
- */
 export async function saveRecord(collectionName, data, id = null) {
-  if (id) {
-    return await pb.collection(collectionName).update(id, data);
-  }
-
-  return await pb.collection(collectionName).create(data);
+  return createOrUpdateRecord(collectionName, data, id);
 }

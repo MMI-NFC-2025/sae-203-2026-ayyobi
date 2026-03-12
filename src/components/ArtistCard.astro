@@ -1,6 +1,7 @@
 ---
 import PocketImage from "./PocketImage.astro";
 import { formatDate, formatHour } from "../lib/utils.mjs";
+import { slugify } from "../lib/utils.mjs";
 
 const { item } = Astro.props;
 
@@ -10,7 +11,7 @@ const date = item.date_representation || null;
 ---
 
 <a
-  href={`/artistes/${artiste.id}`}
+  href={`/artistes/${slugify(artiste.nom_artiste)}`}
   class="group flex h-full flex-col overflow-hidden rounded-[24px] border border-white/10 bg-[#222b3b] transition duration-300 hover:-translate-y-1 hover:border-white/20"
 >
   <PocketImage

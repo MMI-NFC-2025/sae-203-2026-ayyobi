@@ -51,9 +51,10 @@ const artists = await getArtistsBySceneId(scene.id);
 
       {
         scene.description_scene && (
-          <p class="mt-6 max-w-3xl text-lg leading-8 text-white/80 md:text-2xl">
-            {scene.description_scene}
-          </p>
+          <div
+            class="mt-6 max-w-3xl text-center text-lg leading-8 text-white/80 md:text-2xl [&_p]:mb-4 [&_p]:last:mb-0"
+            set:html={scene.description_scene}
+          />
         )
       }
     </div>
@@ -80,7 +81,11 @@ const artists = await getArtistsBySceneId(scene.id);
         <div
           class="mt-6 space-y-4 text-base leading-8 text-white/75 md:text-lg"
         >
-          {scene.description_scene && <p>{scene.description_scene}</p>}
+          {
+            scene.description_scene && (
+              <div set:html={scene.description_scene} class="[&_p]:mb-4 [&_p]:last:mb-0" />
+            )
+          }
 
           {
             scene.localisation && scene.localisation !== "N/A" && (
@@ -106,12 +111,12 @@ const artists = await getArtistsBySceneId(scene.id);
 
   <section class="bg-[#182030]">
     <div class="mx-auto max-w-7xl px-4 py-16 md:px-6">
-      <div class="max-w-3xl">
+      <div class="max-w-3xl text-center">
         <h2 class="font-mono text-4xl font-bold text-white md:text-5xl">
           Artistes programmes
         </h2>
 
-        <p class="mt-4 text-base leading-8 text-white/75 md:text-lg">
+        <p class="mx-auto mt-4 text-center text-base leading-8 text-white/75 md:text-lg">
           Retrouvez tous les artistes qui se produisent sur {scene.nom_scene},
           tries par date de representation.
         </p>

@@ -2,11 +2,23 @@
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import ArtistCard from "../../../components/ArtistCard.astro";
 import {
+  getScenes,
   getSceneById,
   getSceneBySlug,
   getArtistsBySceneId,
 } from "../../../lib/backend.mjs";
 import { slugify } from "../../../lib/utils.mjs";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const scenes = await getScenes();
+
+  return scenes.flatMap((scene) => [
+    { params: { slug: slugify(scene.nom_scene) } },
+    { params: { slug: scene.id } },
+  ]);
+}
 
 const { slug } = Astro.params;
 
@@ -43,7 +55,7 @@ const artists = await getArtistsBySceneId(scene.id);
 
       {
         scene.description_scene && (
-          <p class="mt-6 max-w-3xl text-lg leading-8 text-white/80 md:text-2xl">
+          <p class="mx-auto mt-6 max-w-3xl text-center text-lg leading-8 text-white/80 md:text-2xl">
             {scene.description_scene}
           </p>
         )

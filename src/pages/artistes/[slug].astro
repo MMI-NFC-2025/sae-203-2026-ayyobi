@@ -4,23 +4,38 @@ import PocketImage from "../../components/PocketImage.astro";
 import {
   getArtists,
   getArtistById,
+  getArtistBySlug,
   getGalleryUrls,
   getProgramByArtistId,
 } from "../../lib/backend.mjs";
-import { formatDate, formatHour } from "../../lib/utils.mjs";
+import { formatDate, formatHour, slugify } from "../../lib/utils.mjs";
 
 export async function getStaticPaths() {
   const artists = await getArtists();
 
-  return artists.map((artist) => ({
-    params: { id: artist.id },
-  }));
+  return artists.flatMap((artist) => [
+    { params: { slug: slugify(artist.nom_artiste) } },
+    { params: { slug: artist.id } },
+  ]);
 }
 
-const { id } = Astro.params;
+const { slug } = Astro.params;
 
-const artist = await getArtistById(id);
-const programs = await getProgramByArtistId(id);
+let artist = await getArtistBySlug(slug);
+
+if (!artist) {
+  const artistById = await getArtistById(slug);
+
+  if (artistById) {
+    return Astro.redirect(`/artistes/${slugify(artistById.nom_artiste)}`);
+  }
+}
+
+if (!artist) {
+  throw new Error("Artiste introuvable");
+}
+
+const programs = await getProgramByArtistId(artist.id);
 const gallery = getGalleryUrls(artist, "galerie_photos");
 ---
 
@@ -42,7 +57,7 @@ const gallery = getGalleryUrls(artist, "galerie_photos");
 
       {
         artist.genre_musical && (
-          <p class="mt-6 text-lg leading-8 text-white/80 md:text-2xl">
+          <p class="mx-auto mt-6 text-center text-lg leading-8 text-white/80 md:text-2xl">
             {artist.genre_musical}
           </p>
         )
@@ -68,9 +83,10 @@ const gallery = getGalleryUrls(artist, "galerie_photos");
           À propos
         </h2>
 
-        <p class="mt-6 text-base leading-8 text-white/75 md:text-lg">
-          {artist.description}
-        </p>
+        <div
+          class="mt-6 text-base leading-8 text-white/75 md:text-lg [&_p]:mb-4 [&_p]:last:mb-0"
+          set:html={artist.description}
+        />
 
         <div class="mt-10">
           <h3 class="font-mono text-2xl font-bold text-white">
